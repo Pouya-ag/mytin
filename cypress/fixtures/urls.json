@@ -1,0 +1,12 @@
+{
+    "URL" : "http://192.168.7.10",
+    "URL_stage" : "https://panel.stage.beroozresaan.com/",
+    "URL_stage146" : "http://192.168.7.146",
+    "URL_api" : "https://api.beroozresaan.com/api",
+    "admin_api" : ":7000/api",
+    "customer_api" : ":7005/api",
+    "customer" : ":7006",
+    "admin" : ":7001",
+    "admin_stage" : ":7011",
+    "admin_stage_api" : ":800/api/admin"
+}

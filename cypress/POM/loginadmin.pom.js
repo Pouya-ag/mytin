@@ -1,0 +1,5 @@
+class LoginToAdmin{
+    constructor(){
+        
+    }
+}

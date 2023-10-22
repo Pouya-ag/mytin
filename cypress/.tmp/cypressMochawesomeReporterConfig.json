@@ -1,0 +1,13 @@
+{
+  "jsonDir": "C:\\Users\\mtyn\\Desktop\\autoTest\\cypress\\reports\\html\\.jsons",
+  "reporterOptions": {
+    "cypressParallel": true,
+    "reportDir": "C:\\Users\\mtyn\\Desktop\\autoTest\\cypress\\reports\\html",
+    "overwrite": false
+  },
+  "screenshotsDir": "C:\\Users\\mtyn\\Desktop\\autoTest\\cypress\\screenshots",
+  "videosFolder": "C:\\Users\\mtyn\\Desktop\\autoTest\\cypress\\videos",
+  "outputDir": "C:\\Users\\mtyn\\Desktop\\autoTest\\cypress\\reports\\html",
+  "configOutput": "cypress/.tmp/cypressMochawesomeReporterConfig.json",
+  "removeJsonsFolderAfterMerge": false
+}

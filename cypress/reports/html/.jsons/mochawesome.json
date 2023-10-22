@@ -1,0 +1,111 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2023-10-11T13:08:34.444Z",
+    "end": "2023-10-11T13:08:45.465Z",
+    "duration": 11021,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "23a87dc4-824b-44d4-92ab-04a252f2e418",
+      "title": "",
+      "fullFile": "cypress\\e2e\\AutoTests\\Customer\\Create-tripRequest.cy.js",
+      "file": "cypress\\e2e\\AutoTests\\Customer\\Create-tripRequest.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9e895d11-d901-452a-bc5f-fb29b4ec8b1a",
+          "title": "create trip request",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "create a trip request",
+              "fullTitle": "create trip request create a trip request",
+              "timedOut": null,
+              "duration": 8266,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.gclick('[href=\"/trip-requests/create/sellers\"]');\ncy.wait(500);\ncy.get('[class=\"text-bold\"]').contains('نامی نو').click();\ncy.wait(500);\ncy.get('div.header-container > .q-page > :nth-child(2)').within(() => {\n  cy.get('.q-radio__inner').within(() => {\n    cy.get('input[type=\"radio\"]').should('be.checked');\n  });\n});\ncy.gclick('[href=\"/trip-requests/create/sellers/2/delivery-requests#PARCEL\"]');\ncy.wait(500);\ncy.get(':nth-child(1) > .flex-column').within(() => {\n  cy.get('.flex.items-center > :nth-child(1)').within(() => {\n    cy.gclick('.q-icon');\n    for (let i = 0; i < 10; i++) {\n      cy.gclick('.flex > .q-field > .q-field__inner > .q-field__control > .q-field__prepend > .q-icon');\n    }\n  });\n});\ncy.get(':nth-child(3) > .flex-column > .flex.items-center > :nth-child(1)').within(() => {\n  cy.gclick('.q-icon');\n  for (let i = 0; i < 10; i++) {\n    cy.gclick('.flex > .q-field > .q-field__inner > .q-field__control > .q-field__prepend > .q-icon');\n  }\n});\ncy.intercept('POST', `${_urls.URL}${_urls.customer_api}/customer/trip-requests`).as('trip-request');\ncy.gclick('.q-pa-md > .q-btn > .q-btn__content');\ncy.gclick('.q-pa-sm');\ncy.wait('@trip-request').then(res => {\n  let response = JSON.stringify(res);\n  cy.log(response);\n});\ncy.get('.text-h5', {\n  timeout: 10000\n}).should('be.visible');\ncy.get('.text-h5').contains('سفارش شما با موفقیت ثبت شد!');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[class=\"text-bold\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[class=\"text-bold\"]`, but never found it.\n    at Context.eval (webpack:///./cypress/e2e/AutoTests/Customer/Create-tripRequest.cy.js:21:11)",
+                "diff": null
+              },
+              "uuid": "802c1f3f-f740-42d0-89aa-0a5de3e4edfb",
+              "parentUUID": "9e895d11-d901-452a-bc5f-fb29b4ec8b1a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "802c1f3f-f740-42d0-89aa-0a5de3e4edfb"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 8266,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "cypressParallel": "true",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress\\reports\\html\\.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

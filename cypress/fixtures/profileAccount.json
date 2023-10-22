@@ -1,0 +1,19 @@
+{
+    "profile": {
+      "birthDay": 0,
+      "birthMonth": 0,
+      "birthYear": 1400,
+      "gender": "MALE",
+      "image": "string"
+    },
+    "user": {
+      "email": "jafar.sharbatoghli@email.com",
+      "firstName": "jafar",
+      "forceChangePassword": true,
+      "lastName": "sharbatoghli",
+      "mobile": "09123456789",
+      "nationalId": "0019468997",
+      "personnelCode": "string",
+      "twoFactorEnabled": false
+    }
+}

@@ -1,0 +1,81 @@
+{
+    "agentId": null,
+    "cancelerId": null,
+    "gift": false,
+    "giftRequest": null,
+    "medium": "CUSTOMER",
+    "note": null,
+    "operatorId": null,
+    "parcel": true,
+    "parcelRequest": {
+        "id": null,
+        "description": null,
+        "items": [
+            {
+                "customerConflictReasonId": null,
+                "deliveryRequestItemMetaIn": {
+                    "unitDiscount": 0,
+                    "unitPriceBeforeDiscount": 319283,
+                    "unitPromotionDiscount": 0,
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0
+                },
+                "id": null,
+                "packageId": 648,
+                "packageQuantity": 3,
+                "productArticleId": 163
+            },
+            {
+                "customerConflictReasonId": null,
+                "deliveryRequestItemMetaIn": {
+                    "unitDiscount": 0,
+                    "unitPriceBeforeDiscount": 319283,
+                    "unitPromotionDiscount": 0,
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0
+                },
+                "id": null,
+                "packageId": 552,
+                "packageQuantity": 3,
+                "productArticleId": 112
+            },
+            {
+                "customerConflictReasonId": null,
+                "deliveryRequestItemMetaIn": {
+                    "unitDiscount": 0,
+                    "unitPriceBeforeDiscount": 638564,
+                    "unitPromotionDiscount": 0,
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0
+                },
+                "id": null,
+                "packageId": 604,
+                "packageQuantity": 3,
+                "productArticleId": 119
+            },
+            {
+                "customerConflictReasonId": null,
+                "deliveryRequestItemMetaIn": {
+                    "unitDiscount": 0,
+                    "unitPriceBeforeDiscount": 638564,
+                    "unitPromotionDiscount": 0,
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0
+                },
+                "id": null,
+                "packageId": 553,
+                "packageQuantity": 3,
+                "productArticleId": 113
+            }
+        ]
+    },
+    "payment": false,
+    "paymentRequest": null,
+    "returnBack": false,
+    "returnBackRequest": null,
+    "sellerCustomerId": null,
+    "sellerDeliveryShiftId": 13556,
+    "sellerId": 2,
+    "waste": false,
+    "wasteRequest": null
+}
