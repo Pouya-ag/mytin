@@ -1,10 +1,13 @@
-import { URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
+import { URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
 import { FormControl, ReferencePage, AddProduct } from '../../../../POM/references.pom';
+import { DateTime } from '../../../../POM/gelobalMethod.pom';
+import { depot } from '../../../../fixtures/Items.json';
 
 
 describe('Reference dock create', () => {
     it('Reference dock create', () => {
+        cy.intercept('POST', `${URL_stage146}:800/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document-references/depot-to-fulfillment`).as('creatReference')
         cy.visit(`${URL_stage146}${admin_stage}`)
         cy.wait(2000)
@@ -17,13 +20,35 @@ describe('Reference dock create', () => {
 
         cy.get('.sidebar').should('be.visible')
 
+        cy.fixture("CreateDock").then((data) => {
+            let date = new DateTime()
+            let time = date.liveDate()
+
+            let body = data;
+            body["manualDate"] = `${time.year}-${time.month}-${31}T20:30:00`
+            body["depotInventory"] = true
+            body["depotInventoryGroupId"] = 1
+            body["items"] = depot
+
+            cy.task("connectDB", `
+            SELECT id_pk FROM Dispatch.seller_delivery_shift sds
+            WHERE sds.end_date_time = '${time.year}-${time.month+1}-${time.day} 10:30:00'`)
+            .then((response) => {
+                    body["sellerDeliveryShiftId"] = response[0].id_pk
+            })
+
+            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+                cy.request({method: 'POST', url: `${URL_stage146}${admin_stage_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+            })
+        })
+
         cy.gcclick('div', ' عملیات انبار ')
         cy.wait(200)
 
         cy.gcclick('div', ' رفرنس ')
         cy.wait(200)
 
-        let referencepage = new ReferencePage('/depot-to-fulfillment')
+        let referencepage = new ReferencePage('/references', '/depot-to-fulfillment')
         referencepage.goToPage()
         referencepage.createPage()
 
@@ -55,7 +80,7 @@ describe('Reference dock create', () => {
 
         // add new product 
         let addProduct = new FormControl('[name="کالا"]')
-        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20')
+        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20', ':nth-child(1)')
 
         addProduct.selectOnInput()
         firstProduct.filterProduct()
@@ -70,7 +95,7 @@ describe('Reference dock create', () => {
         firstProduct.typeNumberOfProduct()
 
         // add new product
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(2)', '20')
+        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20', ':nth-child(2)')
 
         addProduct.selectOnInput()
         secondProduct.filterProduct()

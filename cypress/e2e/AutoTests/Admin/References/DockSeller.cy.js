@@ -23,7 +23,7 @@ describe('Reference dock create', () => {
         cy.gcclick('div', ' رفرنس ')
         cy.wait(200)
 
-        let referencepage = new ReferencePage('/dock-to-seller')
+        let referencepage = new ReferencePage('/references', '/dock-to-seller')
         referencepage.goToPage()
         referencepage.createPage()
         
@@ -49,7 +49,7 @@ describe('Reference dock create', () => {
         
         // add new product 
         let addProduct = new FormControl('[name="کالا"]')
-        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20')
+        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20', ':nth-child(1)')
 
         addProduct.selectOnInput()
         firstProduct.filterProduct()
@@ -64,7 +64,7 @@ describe('Reference dock create', () => {
         firstProduct.typeNumberOfProduct()
 
         // add new product
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(2)', '20')
+        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20', ':nth-child(2)')
 
         addProduct.selectOnInput()
         secondProduct.filterProduct()

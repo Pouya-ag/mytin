@@ -27,3 +27,17 @@
 Cypress.Commands.add('gclick', (el) => { cy.get(el).click() })
 Cypress.Commands.add('gtype', (el, value) => { cy.get(el).type(value) })
 Cypress.Commands.add('gcclick', (el, content) => {cy.get(el).contains(content).click()})
+
+Cypress.Commands.add('compareArrays', (firstArray, secondArray) => {
+    if (firstArray.length != secondArray){
+        throw new Error('Array have different lengths');
+    }
+    for (let i = 0 ; i < firstArray.length ; i++){
+        const fItem = firstArray[i];
+        const sItem = secondArray[i];
+
+        if (JSON.stringify(fItem) !== JSON.stringify(sItem)){
+            throw new Error('Array are not deeply equal')
+        }
+    }
+})

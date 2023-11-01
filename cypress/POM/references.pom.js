@@ -1,6 +1,6 @@
 export class ReferencePage{
-    constructor(path){
-        this.UrlPage = '/references'
+    constructor(urlpage, path){
+        this.UrlPage = urlpage
         this.path = path
     }
 
@@ -59,10 +59,11 @@ export class FormControl{
 }
 
 export class AddProduct{
-    constructor(filter, child, numOfProduct){
+    constructor(filter, child, numOfProduct, productchild){
         this.filter = filter
         this.child = child
         this.numOfProduct = numOfProduct
+        this.productchild = productchild
     }
 
     filterProduct(){
@@ -92,7 +93,7 @@ export class AddProduct{
     }
 
     typeNumberOfProduct(){
-        cy.get(`tbody > ${this.child} > :nth-child(5)`).within(() => {
+        cy.get(`tbody > ${this.productchild} > :nth-child(5)`).within(() => {
             cy.get('div').first().within(() => {
                 cy.get('input').type('20')
             })

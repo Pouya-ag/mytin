@@ -1,0 +1,12 @@
+{
+    "fulfillmentInventoryGroupId":null,
+    "depotInventoryGroupId":null,
+    "fulfillmentInventory":false,
+    "depotInventory":false,
+    "inventoryId":162,
+
+    "sellerDeliveryShiftId":null,
+    "sellerId":2,
+    "description":null,
+    "items": null
+}

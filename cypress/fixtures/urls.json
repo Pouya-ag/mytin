@@ -8,5 +8,6 @@
     "customer" : ":7006",
     "admin" : ":7001",
     "admin_stage" : ":7011",
-    "admin_stage_api" : ":800/api/admin"
+    "admin_stage_api" : ":800/api/admin",
+    "InvDocRef" : "/inventory-document-references"
 }
