@@ -24,18 +24,20 @@ describe('pre-document dock to depot', () => {
         cy.get('.sidebar').should('be.visible')
 
         cy.fixture("CreateDock").then((data) => {
-            let date = new DateTime()
+            let date = new DateTime(1)
             let time = date.liveDate()
 
             let body = data;
-            body["manualDate"] = `${time.year}-${time.month+1}-${time.day-1}T20:30:00`
+            body["manualDate"] = `${time}T20:30:00`
             body["depotInventory"] = true
             body["depotInventoryGroupId"] = 1
             body["items"] = depot
 
+            date = new DateTime(0)
+            time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time.year}-${time.month+1}-${time.day} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 10:30:00'`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })

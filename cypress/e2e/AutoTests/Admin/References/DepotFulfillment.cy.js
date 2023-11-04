@@ -30,7 +30,6 @@ describe('Reference dock create', () => {
             body["depotInventory"] = true
             body["depotInventoryGroupId"] = 1
             body["items"] = depot
-            cy.log(JSON.stringify(body.manualDate))
 
             date = new DateTime(0)
             time = date.liveDate()

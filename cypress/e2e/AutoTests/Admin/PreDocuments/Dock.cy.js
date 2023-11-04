@@ -24,11 +24,11 @@ describe('pre document for dock', () => {
         cy.get('.sidebar').should('be.visible')
 
         cy.fixture("CreateDock").then((data) => {
-            let date = new DateTime()
+            let date = new DateTime(1)
             let time = date.liveDate()
 
             let body = data;
-            body["manualDate"] = `${time.year}-${time.month+1}-${time.day-1}T20:30:00`
+            body["manualDate"] = `${time}T20:30:00`
             body["depotInventory"] = true
             body["depotInventoryGroupId"] = 1
             body["items"] = depot
