@@ -28,7 +28,7 @@ describe('pre document for dock', () => {
             let time = date.liveDate()
 
             let body = data;
-            body["manualDate"] = `${time.year}-${time.month}-${31}T20:30:00`
+            body["manualDate"] = `${time.year}-${time.month+1}-${time.day-1}T20:30:00`
             body["depotInventory"] = true
             body["depotInventoryGroupId"] = 1
             body["items"] = depot

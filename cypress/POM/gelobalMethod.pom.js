@@ -1,11 +1,15 @@
 export class DateTime{
+    constructor(day){
+        this.day = day
+    }
 
     liveDate(){
         const date = new Date();
-        let year = date.getFullYear()
-        let month = date.getMonth()
-        let day = date.getDate()
 
-        return {year : year, month : month, day : day}
+        date.setDate(date.getDate() - this.day);
+        const now = date.toISOString().split('.')[0];
+        const arr = now.split('T')
+        const dateOnly = arr[0]
+        return dateOnly;
     }
 }
