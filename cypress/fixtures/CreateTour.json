@@ -1,0 +1,11 @@
+{
+    "driverId": 13013,
+    "courierId": 13013,
+    "vehicleId": 132,
+    "tripsIn": [
+        {
+            "tripId": null,
+            "sortOrder": 1
+        }
+    ]
+}

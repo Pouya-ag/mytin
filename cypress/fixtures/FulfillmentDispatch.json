@@ -1,0 +1,8 @@
+{
+    "type":"BOTH",
+    "sourceInventoryId":5,
+    "destinationInventoryId":6,
+    "inventoryDoctypeId":3,
+    "shippingPackageId":null,
+    "manualDate":null
+}

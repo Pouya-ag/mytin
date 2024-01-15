@@ -1,4 +1,4 @@
-import { URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
 import { FormControl, ReferencePage, AddProduct } from '../../../../POM/references.pom';
 import { DateTime } from '../../../../POM/gelobalMethod.pom';
@@ -7,9 +7,9 @@ import { depot } from '../../../../fixtures/Items.json';
 
 describe('Reference dock create', () => {
     it('Reference dock create', () => {
-        cy.intercept('POST', `${URL_stage146}:800/api/pub/account/login`).as('get-accessToken')
-        cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document-references/depot-to-fulfillment`).as('creatReference')
-        cy.visit(`${URL_stage146}${admin_stage}`)
+        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/depot-to-fulfillment`).as('creatReference')
+        cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
         let login = new Login2()
@@ -42,7 +42,7 @@ describe('Reference dock create', () => {
             })
 
             cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL_stage146}${admin_stage_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+                cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
             })
         })
 
@@ -69,11 +69,29 @@ describe('Reference dock create', () => {
         let dock = new FormControl('[name="انبار دپو"]')
         dock.selectOnInput()
         dock.btnSearchModal()
+        // cy.gclick(':nth-child(2) > [aria-colindex="5"] > :nth-child(1) > .text-center > .btn')
 
         // add date for reference to customer
         let addcustomerdate = new FormControl('[name="شیوه و زمان مراجعه به مشتری"]')
         addcustomerdate.selectOnInput()
-        cy.gclick(':nth-child(2) > .me-auto')
+
+        cy.get('[name="تاریخ مراجعه "]').within(() => {
+            cy.get(':nth-child(2)').eq(1).click()
+        })
+        cy.gclick('.card-footer > .btn-success')
+        cy.gclick('.card-footer > .btn-secondary')
+        cy.wait(2000)
+
+        cy.get('[name="تاریخ مراجعه "]').within(() => {
+            cy.get(':nth-child(5)').click()
+        })
+        cy.gclick('.card-footer > .btn-success')
+        cy.gclick('.card-footer > .btn-secondary')
+        cy.wait(200)
+
+        cy.gclick('.btn-primary')
+
+        // cy.gclick(':nth-child(2) > .me-auto')
         cy.get('.table').within(() => {
             cy.get('tbody > :nth-child(1) > :nth-child(3)').within(() => {
                 cy.get('.text-center').within(() => {

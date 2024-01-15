@@ -1,6 +1,6 @@
-import { URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
-import { DateTime } from '../../../../POM/gelobalMethod.pom';
+import { DateTime, ConfirmPreDock } from '../../../../POM/gelobalMethod.pom';
 import { ReferencePage } from '../../../../POM/references.pom';
 import { depot, dock } from '../../../../fixtures/Items.json';
 import { SetDateTime, FormControl, AddProduct } from '../../../../POM/preDocuments.pom';
@@ -9,11 +9,11 @@ import { SetDateTime, FormControl, AddProduct } from '../../../../POM/preDocumen
 
 describe('pre-document dock to fulfillment', () => {
     it('call api to create new reference "depot to fulfillment" then pre-document depot to fulfillment', () => {
-        cy.visit(`${URL_stage146}${admin_stage}`)
+        cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL_stage146}:800/api/pub/account/login`).as('get-accessToken')
-        cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document/depot-to-dock`).as('get-dockId')
+        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}${admin_api}/inventory-document/depot-to-dock`).as('get-dockId')
         
         let login = new Login2()
         login.usernameInput()
@@ -21,8 +21,16 @@ describe('pre-document dock to fulfillment', () => {
         login.LoginBtn()        
         cy.wait(3000)
 
+
+
+// url api request has been changed so should change it for just some days
+
+
+
+
         cy.get('.sidebar').should('be.visible')
 
+        // create reference to dock
         cy.fixture("CreateDock").then((data) => {
             let date = new DateTime(1)
             let time = date.liveDate()
@@ -43,11 +51,55 @@ describe('pre-document dock to fulfillment', () => {
             })
 
             cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL_stage146}${admin_stage_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+                cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+            })
+        })
+        // create pre-document to dock
+        cy.fixture("PreDock").then( data => {
+            let date = new DateTime(1)
+            let time = date.liveDate()
+
+            let body = data.Dock;
+            body["manualDate"] = `${time}T20:30:00`
+            body["refDate"] = `${time}T20:30:00`
+            cy.get('@create-reference').then(res => {
+                body["inventoryDocumentReferenceId"] = res.body.id
+            })
+            
+            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+                cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDock')
+            })
+            cy.wait(500)
+            cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+                cy.get('@create-preDock').then(data => {
+                    cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-predock')
+                })
             })
         })
 
-        // call api to create new reference, its depot to dock
+        // create pre-document dock to depot*********************************************
+        cy.fixture("PreDock").then( data => {
+            let date = new DateTime(1)
+            let time = date.liveDate()
+
+            let body = data.DockDepot;
+            body["manualDate"] = `${time}T20:30:00`
+            cy.get('@create-reference').then(res => {
+                body["inventoryDocumentReferenceId"] = res.body.id + 1
+            })
+            
+            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+                cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-depot`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDockDepot')
+            })
+            cy.wait(500)
+            cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+                cy.get('@create-preDockDepot').then(data => {
+                    cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-depot/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-preDockDepot')
+                })
+            })
+        })
+
+        // create new reference, its depot to dock
         cy.fixture("CreateDock").then((data) => {
             let date = new DateTime(1)
             let time = date.liveDate()
@@ -69,10 +121,32 @@ describe('pre-document dock to fulfillment', () => {
             })
 
             cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL_stage146}${admin_stage_api}${InvDocRef}/depot-to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('referenceDepotDock')
+                cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/depot-to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('referenceDepotDock')
             })
         })
-    
+
+        // create pre-document depot to dock
+        // cy.fixture("PreDock").then( data => {
+        //     let date = new DateTime(1)
+        //     let time = date.liveDate()
+
+        //     let body = data.Depot;
+        //     body["manualDate"] = `${time}T20:30:00`
+        //     cy.get('@referenceDepotDock').then(res => {
+        //         body["inventoryDocumentReferenceId"] = res.body.id
+        //     })
+            
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+        //         cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/depot-to-dock`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDock')
+        //     })
+        //     cy.wait(500)
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+        //         cy.get('@create-preDock').then(data => {
+        //             cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/depot-to-dock/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-predock')
+        //         })
+        //     })
+        // })
+
         // go to pre document's page
         cy.gcclick('div', ' عملیات انبار ')
         cy.wait(200)
@@ -95,6 +169,20 @@ describe('pre-document dock to fulfillment', () => {
         formControl.btnSearchModal()
         formControl.setSeller()
 
+        // cy.get('[name="انبار مبدا"]').within(() => {
+        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
+        // })
+        // cy.wait(200)
+        // cy.gclick('#item-text-1')
+        // cy.wait(200)
+
+        // cy.get('[name="انبار مقصد"]').within(() => {
+        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
+        // })
+        // cy.wait(200)
+        // cy.gclick('#item-text-1')
+        // cy.wait(200)
+
         cy.gtype('[name="تحویل گیرنده"]', 'جعفر جعفری')
         cy.wait(200)
 
@@ -108,7 +196,8 @@ describe('pre-document dock to fulfillment', () => {
             cy.gtype('.modal-body > div > .row > :nth-child(1) > .input-group > .form-control', res.body.id)
         })
   
-        formControl.btnSearchModal()
+        // formControl.btnSearchModal()
+        cy.gclick('.btn-primary')
 
         // add new product
         let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20')
@@ -123,7 +212,7 @@ describe('pre-document dock to fulfillment', () => {
         firstProduct.typeNumberOfProduct()
 
         // add new product 
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20')
+        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(2)', '20')
 
         formControl.btnSearchProduct()
         secondProduct.filterProduct()
@@ -164,6 +253,10 @@ describe('pre-document dock to fulfillment', () => {
                     expect(newproduct[i].name).to.eq(newresponse[i].name)
                 }
             })
+            cy.intercept('POST', `${URL}${admin_api}/inventory-document/depot-to-dock/${res}/confirm`).as('confirm-dock')
+            let confirm = new ConfirmPreDock('@confirm-dock')
+            confirm.buttonConfirm()
+            confirm.checkResponse()
         })
     });
 })

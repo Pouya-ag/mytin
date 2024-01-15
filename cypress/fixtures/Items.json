@@ -88,5 +88,21 @@
         "dockQuantity":20,
         "fulfillmentQuantity":0,
         "depotQuantity":0}
-        ]
+        ],
+    "seller" : [
+        {"productArticleId":163,
+        "productId":212,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه  ژامبون 200 گرمی",
+        "barcode":"6262862300030",
+        "quantity":20},
+        {"productArticleId":112,
+        "productId":256,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه مرغ  200 گرمی",
+        "barcode":"6262862300016",
+        "quantity":20}
+    ]
 }

@@ -1,12 +1,12 @@
-import { URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
 import { FormControl, ReferencePage, AddProduct } from '../../../../POM/references.pom';
 
 
 describe('Reference dock create', () => {
     it('Reference dock create', () => {
-        cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document-references/dock-to-seller`).as('creatReference')
-        cy.visit(`${URL_stage146}${admin_stage}`)
+        cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/dock-to-seller`).as('creatReference')
+        cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
         let login = new Login2()
@@ -40,7 +40,7 @@ describe('Reference dock create', () => {
         dock.selectOnInput()
         dock.btnSearchModal()
         cy.get('.table').within(() => {
-            cy.get('tbody > :nth-child(2) > :nth-child(5)').within(() => {
+            cy.get('tbody > :nth-child(3) > :nth-child(5)').within(() => {
                 cy.get('div > .text-center').within(() => {
                     cy.gclick('.btn-success')
                 })
@@ -77,7 +77,7 @@ describe('Reference dock create', () => {
 
         // type number of product
         secondProduct.typeNumberOfProduct()
-        
+        cy.wait(5000)
         cy.gclick('#footer-submit-button')
         
         cy.wait('@creatReference')

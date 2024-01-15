@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "cypress": "^13.3.3",
+    "cypress": "^13.4.0",
     "cypress-mochawesome-reporter": "^3.6.0",
     "mocha-parallel-tests": "^2.3.0",
     "pg": "^8.11.3"
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "npx cypress run",
+    "cypress": "NODE_ENV=development cypress open",
     "customer:parallel": "cypress-parallel -d cypress/e2e/AutoTests/Customer/ -t 3 -s test -r 'cypress-mochawesome-reporter' -o 'cypressParallel=true'",
     "admin:parallel": "cypress-parallel -d cypress/e2e/AutoTests/Admin/ -t 3 -s test -r 'cypress-mochawesome-reporter' -o 'cypressParallel=true'"
   }

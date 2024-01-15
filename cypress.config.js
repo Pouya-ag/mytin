@@ -14,7 +14,7 @@ module.exports = defineConfig({
           const client = new Client({
             user: "pouya_agh",
             password: "vfdasverEWCF#@$",
-            host: "192.168.7.149",
+            host: "192.168.7.41",
             database: "Dispatch",
             ssl: false,
             port: 5432

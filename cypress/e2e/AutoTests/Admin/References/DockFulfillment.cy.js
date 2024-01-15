@@ -1,12 +1,12 @@
-import { URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
 import { ReferencePage, FormControl, AddProduct } from '../../../../POM/references.pom';
 
 
 describe('Reference dock create', () => {
     it('Reference dock create', () => {
-        cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document-references/to-dock`).as('creatReference')
-        cy.visit(`${URL_stage146}${admin_stage}`)
+        cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/to-dock`).as('creatReference')
+        cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
         let login = new Login2()
@@ -35,6 +35,13 @@ describe('Reference dock create', () => {
 
         // set date to form control
         seller.setDate()
+
+        // cy.get('[name="انبار بارانداز"]').within(() => {
+        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
+        // })
+        // cy.wait(200)
+        // cy.gclick('#item-text-0')
+        // cy.wait(200)
         
         // check switch toggle
         cy.gclick(':nth-child(2) > :nth-child(1) > .form-control > .d-inline-block > .switch-slider')
@@ -43,7 +50,23 @@ describe('Reference dock create', () => {
         // add date for reference to customer
         let addcustomerdate = new FormControl('[name="شیوه و زمان مراجعه به مشتری"]')
         addcustomerdate.selectOnInput()
-        cy.gclick(':nth-child(2) > .me-auto')
+        cy.get('[name="تاریخ مراجعه "]').within(() => {
+            cy.get(':nth-child(2)').eq(1).click()
+        })
+        cy.gclick('.card-footer > .btn-success')
+        cy.gclick('.card-footer > .btn-secondary')
+        cy.wait(2000)
+
+        cy.get('[name="تاریخ مراجعه "]').within(() => {
+            cy.get(':nth-child(5)').click()
+        })
+        cy.gclick('.card-footer > .btn-success')
+        cy.gclick('.card-footer > .btn-secondary')
+        cy.wait(200)
+
+        cy.gclick('.btn-primary')
+
+        // cy.gclick(':nth-child(2) > .me-auto')
         cy.get('.table').within(() => {
             cy.get('tbody > :nth-child(1) > :nth-child(3)').within(() => {
                 cy.get('.text-center').within(() => {

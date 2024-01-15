@@ -1,6 +1,6 @@
-import { URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
-import { DateTime } from '../../../../POM/gelobalMethod.pom';
+import { DateTime, ConfirmPreDock } from '../../../../POM/gelobalMethod.pom';
 import { ReferencePage } from '../../../../POM/references.pom';
 import { fulfillment } from '../../../../fixtures/Items.json';
 import { SetDateTime, FormControl } from '../../../../POM/preDocuments.pom';
@@ -9,11 +9,11 @@ import { SetDateTime, FormControl } from '../../../../POM/preDocuments.pom';
 
 describe('pre-document dock to fulfillment', () => {
     it('call api to create new reference "dock to fulfillment" then pre-document dock to fulfillment', () => {
-        cy.visit(`${URL_stage146}${admin_stage}`)
+        cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL_stage146}:800/api/pub/account/login`).as('get-accessToken')
-        cy.intercept('POST', `${URL_stage146}${admin_stage_api}/inventory-document/dock-to-fulfillment`).as('get-dockId')
+        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}${admin_api}/inventory-document/dock-to-fulfillment`).as('get-dockId')
         
         let login = new Login2()
         login.usernameInput()
@@ -43,7 +43,29 @@ describe('pre-document dock to fulfillment', () => {
             })
 
             cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL_stage146}${admin_stage_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+                cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+            })
+        })
+        // create pre-document to dock with confirm
+        cy.fixture("PreDock").then( data => {
+            let date = new DateTime(1)
+            let time = date.liveDate()
+
+            let body = data.Dock;
+            body["manualDate"] = `${time}T20:30:00`
+            body["refDate"] = `${time}T20:30:00`
+            cy.get('@create-reference').then(res => {
+                body["inventoryDocumentReferenceId"] = res.body.id
+            })
+            
+            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+                cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDock')
+            })
+            cy.wait(500)
+            cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+                cy.get('@create-preDock').then(data => {
+                    cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-predock')
+                })
             })
         })
 
@@ -69,6 +91,24 @@ describe('pre-document dock to fulfillment', () => {
         formControl.btnSearchModal()
         formControl.setSeller()
 
+        // should add docks 
+        // cy.get('[name="انبار مبدا"]').within(() => {
+        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
+        // })
+        // cy.wait(200)
+         // I should change this get below with ID search
+        // cy.gclick('#item-text-0')
+        // cy.wait(200)
+
+        // cy.get('[name="انبار مقصد"]').within(() => {
+        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
+        // })
+        // cy.wait(200)
+         // I should change this get below with ID search
+        // cy.gclick('#item-text-0')
+        // cy.wait(200)
+
+
         cy.gtype('[name="تحویل گیرنده"]', 'جعفر جعفری')
         cy.wait(200)
 
@@ -88,7 +128,8 @@ describe('pre-document dock to fulfillment', () => {
             })
         })
   
-        formControl.btnSearchModal()
+        // formControl.btnSearchModal()
+        cy.gclick('.btn-primary')
 
         cy.gcclick('button', ' درج کالاهای رفرنس ')
         cy.wait(1000)
@@ -129,6 +170,10 @@ describe('pre-document dock to fulfillment', () => {
                     expect(newproduct[i].name).to.eq(newresponse[i].name)
                 }
             })
+            cy.intercept('POST', `${URL}${admin_api}/inventory-document/dock-to-fulfillment/${res}/confirm`).as('confirm-dock')
+            let confirm = new ConfirmPreDock('@confirm-dock')
+            confirm.buttonConfirm()
+            confirm.checkResponse()
         })
     });
 })

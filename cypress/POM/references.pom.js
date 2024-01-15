@@ -37,7 +37,7 @@ export class FormControl{
     btnSearchModal(){
         cy.get('.modal-body').within(() => {
             cy.get('.align-items-center').within(() => {
-                cy.get('button[class="btn me-auto btn-primary"]').click()
+                cy.get('.btn-primary').click()
             })
         })
         cy.wait(500)

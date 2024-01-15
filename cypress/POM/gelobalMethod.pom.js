@@ -13,3 +13,21 @@ export class DateTime{
         return dateOnly;
     }
 }
+
+export class ConfirmPreDock{
+    constructor(rest){
+        this.rest = rest
+    }
+
+    buttonConfirm(){
+        cy.gclick('#confirm-document')
+        cy.wait(500)
+    }
+
+    checkResponse(){
+        cy.gclick('.snotify-centerCenter > .snotify-confirm > .snotifyToast__buttons > .success')
+        cy.wait(this.rest).then(res => {
+            expect(res.response.statusCode).to.eq(204)
+        })
+    }
+}

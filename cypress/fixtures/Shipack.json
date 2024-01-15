@@ -1,0 +1,21 @@
+{
+    "type": "DISPATCH",
+    "deliveryRequestId": "yoyo",
+    "tourId": null,
+    "shippingPackageItemIns": [
+        {
+            "deliveryRequestItemId": "yoyo",
+            "id": null,
+            "quantity": 20,
+            "packageQuantity": 20
+        },
+        {
+            "deliveryRequestItemId": "yoyo",
+            "id": null,
+            "quantity": 20,
+            "packageQuantity": 20
+        }
+    ],
+    "dispatchCenter": null,
+    "fulfillmentCenter": null
+}

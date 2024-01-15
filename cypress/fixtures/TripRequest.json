@@ -1,0 +1,256 @@
+{
+    "agentId": 13162,
+    "customerId": null,
+    "sellerCustomerId": 40414,
+    "sellerDeliveryShiftId": 16556,
+    "cashSettlement": true,
+    "cashDebit": 0,
+    "status": "PENDING",
+    "sellerId": 2,
+    "tripId": null,
+    "note": null,
+    "parcelRequest": {
+        "id": null,
+        "items": [
+            {
+                "id": null,
+                "article": {
+                    "id": 163,
+                    "seller": {
+                        "id": 2,
+                        "name": "نامی نو",
+                        "legalName": null,
+                        "maxDiscountPercent": 40,
+                        "maxTotalDiscountPercent": 40,
+                        "maxPromotionDiscountPercent": 30,
+                        "sortOrder": 2
+                    },
+                    "product": {
+                        "id": 212,
+                        "name": "الویه  ژامبون 200 گرمی",
+                        "image": "dispatch/product/483ed0caa8854a93baa1d1a03731b743.png",
+                        "storageConditionId": 1,
+                        "status": "CONFIRMED",
+                        "productBrand": null,
+                        "seller": null,
+                        "storageCondition": null,
+                        "productUnit": {
+                            "id": 12,
+                            "name": "بسته",
+                            "decimalPlaces": 0,
+                            "ttmsId": null
+                        },
+                        "barcode": "6262862300030",
+                        "barcode2": null,
+                        "barcode3": null,
+                        "sortOrder": 20,
+                        "vatCategory": null,
+                        "salesValueRate": 1,
+                        "searchCode": 102
+                    },
+                    "code": "10102200",
+                    "active": true,
+                    "waste": true,
+                    "returnBack": false,
+                    "gift": false,
+                    "parcel": true,
+                    "sellerId": 2,
+                    "productId": 212,
+                    "sellerProductCategory": null
+                },
+                "product": {
+                    "id": 212,
+                    "name": "الویه  ژامبون 200 گرمی",
+                    "image": "dispatch/product/483ed0caa8854a93baa1d1a03731b743.png",
+                    "storageConditionId": 1,
+                    "status": "CONFIRMED",
+                    "productBrand": null,
+                    "seller": null,
+                    "storageCondition": null,
+                    "productUnit": {
+                        "id": 12,
+                        "name": "بسته",
+                        "decimalPlaces": 0,
+                        "ttmsId": null
+                    },
+                    "barcode": "6262862300030",
+                    "barcode2": null,
+                    "barcode3": null,
+                    "sortOrder": 20,
+                    "vatCategory": null,
+                    "salesValueRate": 1,
+                    "searchCode": 102
+                },
+                "packageId": 648,
+                "packageProductUnitId": 12,
+                "packageProductUnit": {
+                    "id": 12,
+                    "name": "بسته",
+                    "decimalPlaces": 0,
+                    "ttmsId": null
+                },
+                "packageQuantity": "21",
+                "packageQuantityRate": 1,
+                "deliveryRequestItemMetaIn": {
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0,
+                    "unitSellerExtraDiscount": 0,
+                    "unitMarketExtraDiscount": 0,
+                    "unitPriceBeforeDiscount": 367781,
+                    "unitPromotionDiscount": 0,
+                    "unitTax": 22067,
+                    "unitToll": 11033,
+                    "unitMinPayable": 332730,
+                    "unitPayable": 400881
+                },
+                "vatCategory": {
+                    "id": 2,
+                    "name": "مشمول 9 درصد مالیات و عوارض",
+                    "taxPercent": 6,
+                    "tollPercent": 3
+                },
+                "productId": 212,
+                "productArticleId": 163,
+                "productUnitId": 12,
+                "productUnit": {
+                    "id": 12,
+                    "name": "بسته",
+                    "decimalPlaces": 0,
+                    "ttmsId": null
+                },
+                "quantity": 21,
+                "discount": 0,
+                "payable": 8017620,
+                "priceAfterDiscount": 7355620,
+                "priceBeforeDiscount": 7355620,
+                "promotionDiscount": 0,
+                "tax": 441340,
+                "toll": 220660,
+                "_rowVariant": null
+            },
+            {
+                "id": null,
+                "article": {
+                    "id": 112,
+                    "seller": {
+                        "id": 2,
+                        "name": "نامی نو",
+                        "legalName": null,
+                        "maxDiscountPercent": 40,
+                        "maxTotalDiscountPercent": 40,
+                        "maxPromotionDiscountPercent": 30,
+                        "sortOrder": 2
+                    },
+                    "product": {
+                        "id": 256,
+                        "name": "الویه مرغ  200 گرمی",
+                        "image": "dispatch/product/6e9cb33a5f994920ad013e69cc0d9fdc.png",
+                        "storageConditionId": 1,
+                        "status": "CONFIRMED",
+                        "productBrand": null,
+                        "seller": null,
+                        "storageCondition": null,
+                        "productUnit": {
+                            "id": 12,
+                            "name": "بسته",
+                            "decimalPlaces": 0,
+                            "ttmsId": null
+                        },
+                        "barcode": "6262862300016",
+                        "barcode2": null,
+                        "barcode3": null,
+                        "sortOrder": 10,
+                        "vatCategory": null,
+                        "salesValueRate": 1,
+                        "searchCode": 101
+                    },
+                    "code": "10101200",
+                    "active": true,
+                    "waste": true,
+                    "returnBack": false,
+                    "gift": false,
+                    "parcel": true,
+                    "sellerId": 2,
+                    "productId": 256,
+                    "sellerProductCategory": null
+                },
+                "product": {
+                    "id": 256,
+                    "name": "الویه مرغ  200 گرمی",
+                    "image": "dispatch/product/6e9cb33a5f994920ad013e69cc0d9fdc.png",
+                    "storageConditionId": 1,
+                    "status": "CONFIRMED",
+                    "productBrand": null,
+                    "seller": null,
+                    "storageCondition": null,
+                    "productUnit": {
+                        "id": 12,
+                        "name": "بسته",
+                        "decimalPlaces": 0,
+                        "ttmsId": null
+                    },
+                    "barcode": "6262862300016",
+                    "barcode2": null,
+                    "barcode3": null,
+                    "sortOrder": 10,
+                    "vatCategory": null,
+                    "salesValueRate": 1,
+                    "searchCode": 101
+                },
+                "packageId": 552,
+                "packageProductUnitId": 12,
+                "packageProductUnit": {
+                    "id": 12,
+                    "name": "بسته",
+                    "decimalPlaces": 0,
+                    "ttmsId": null
+                },
+                "packageQuantity": "21",
+                "packageQuantityRate": 1,
+                "deliveryRequestItemMetaIn": {
+                    "unitSellerDiscount": 0,
+                    "unitMarketDiscount": 0,
+                    "unitSellerExtraDiscount": 0,
+                    "unitMarketExtraDiscount": 0,
+                    "unitPriceBeforeDiscount": 367781,
+                    "unitPromotionDiscount": 0,
+                    "unitTax": 22067,
+                    "unitToll": 11033,
+                    "unitMinPayable": 332730,
+                    "unitPayable": 400881
+                },
+                "vatCategory": {
+                    "id": 2,
+                    "name": "مشمول 9 درصد مالیات و عوارض",
+                    "taxPercent": 6,
+                    "tollPercent": 3
+                },
+                "productId": 256,
+                "productArticleId": 112,
+                "productUnitId": 12,
+                "productUnit": {
+                    "id": 12,
+                    "name": "بسته",
+                    "decimalPlaces": 0,
+                    "ttmsId": null
+                },
+                "quantity": 21,
+                "discount": 0,
+                "payable": 8017620,
+                "priceAfterDiscount": 7355620,
+                "priceBeforeDiscount": 7355620,
+                "promotionDiscount": 0,
+                "tax": 441340,
+                "toll": 220660,
+                "_rowVariant": null
+            }
+        ]
+    },
+    "returnBackRequest": null,
+    "wasteRequest": null,
+    "paymentRequest": null,
+    "parcel": true,
+    "payment": false,
+    "returnBack": false,
+    "waste": false
+}

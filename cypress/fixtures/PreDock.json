@@ -1,0 +1,216 @@
+{
+    "Dock" : {
+        "type": "IN",
+        "sourceInventoryId": null,
+        "destinationInventoryId": 162,
+        "sellerId": 2,
+        "seller": {
+            "id": 2,
+            "name": "نامی نو",
+            "delivery": true,
+            "settlement": true,
+            "waste": true,
+            "returnBack": false,
+            "gift": true,
+            "returnPolicy": null,
+            "wastePolicy": null,
+            "firstName": null,
+            "lastName": null,
+            "legalName": null,
+            "deliveryPolicy": "با افزایش تعداد خرید کالاهای مختلف از تخفیف های پلکانی استفاده کنید و سود خود را به مقدار قابل ملاحظه ای افزایش دهید     *     \n\nمدت زمان تحویل ضایعات از تاریخ انقضای محصول، تا پنج روز کاری می‌باشد",
+            "maxDiscountPercent": 40,
+            "maxTotalDiscountPercent": 40,
+            "maxPromotionDiscountPercent": 18
+        },
+        "sellerCustomerId": null,
+        "inventoryDoctypeId": 1,
+        "refNo": "123456789",
+        "refDate": null,
+        "manualDate": null,
+        "description": null,
+        "proxyId": null,
+        "transferee": "علی",
+        "deliverer": "جعفر",
+        "corrective": false,
+        "inventoryDocumentReferenceId": null,
+        "items": [
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 1,
+                "productUnitId": 12,
+                "productId": 256,
+                "productArticleId": 112
+            },
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 2,
+                "productUnitId": 12,
+                "productId": 212,
+                "productArticleId": 163
+            }
+        ],
+        "sellerType": "seller",
+        "sellerDeliveryReasonId": 4,
+        "sellerDeliveryReason": null
+    },
+    "Depot" : {
+        "type": "BOTH",
+        "sourceInventoryId": 165,
+        "destinationInventoryId": 162,
+        "sellerId": 2,
+        "seller": {
+            "id": 2,
+            "name": "نامی نو",
+            "delivery": true,
+            "settlement": true,
+            "waste": true,
+            "returnBack": false,
+            "gift": true,
+            "returnPolicy": null,
+            "wastePolicy": null,
+            "firstName": null,
+            "lastName": null,
+            "legalName": null,
+            "deliveryPolicy": "با افزایش تعداد خرید کالاهای مختلف از تخفیف های پلکانی استفاده کنید و سود خود را به مقدار قابل ملاحظه ای افزایش دهید     *     \n\nمدت زمان تحویل ضایعات از تاریخ انقضای محصول، تا پنج روز کاری می‌باشد",
+            "maxDiscountPercent": 40,
+            "maxTotalDiscountPercent": 40,
+            "maxPromotionDiscountPercent": 18
+        },
+        "inventoryDoctypeId": 3,
+        "refNo": null,
+        "refDate": null,
+        "manualDate": null,
+        "description": null,
+        "proxyId": null,
+        "transferee": "علی",
+        "deliverer": "جعفر",
+        "corrective": false,
+        "inventoryDocumentReferenceId": null,
+        "items": [
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 1,
+                "productUnitId": 12,
+                "productId": 212,
+                "productArticleId": 163,
+                "name": "الویه  ژامبون 200 گرمی"
+            },
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 2,
+                "productUnitId": 12,
+                "productId": 256,
+                "productArticleId": 112,
+                "name": "الویه مرغ  200 گرمی"
+            }
+        ]
+    },
+    "DockDepot" : {
+        "type": "BOTH",
+        "sourceInventoryId": 162,
+        "destinationInventoryId": 165,
+        "sellerId": 2,
+        "seller": {
+            "id": 2,
+            "name": "نامی نو",
+            "delivery": true,
+            "settlement": true,
+            "waste": true,
+            "returnBack": false,
+            "gift": true,
+            "returnPolicy": null,
+            "wastePolicy": null,
+            "firstName": null,
+            "lastName": null,
+            "legalName": null,
+            "deliveryPolicy": "با افزایش تعداد خرید کالاهای مختلف از تخفیف های پلکانی استفاده کنید و سود خود را به مقدار قابل ملاحظه ای افزایش دهید     *     \n\nمدت زمان تحویل ضایعات از تاریخ انقضای محصول، تا پنج روز کاری می‌باشد",
+            "maxDiscountPercent": 40,
+            "maxTotalDiscountPercent": 40,
+            "maxPromotionDiscountPercent": 18
+        },
+        "inventoryDoctypeId": 3,
+        "refNo": null,
+        "refDate": null,
+        "manualDate": null,
+        "description": null,
+        "proxyId": null,
+        "transferee": "علی",
+        "deliverer": "جعفر",
+        "corrective": false,
+        "inventoryDocumentReferenceId": null,
+        "items": [
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 1,
+                "productUnitId": 12,
+                "productId": 256,
+                "productArticleId": 112
+            },
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 2,
+                "productUnitId": 12,
+                "productId": 212,
+                "productArticleId": 163
+            }
+        ]
+    },
+    "DockFulfillment" : {
+        "type": "BOTH",
+        "sourceInventoryId": 162,
+        "destinationInventoryId": 5,
+        "sellerId": 2,
+        "seller": {
+            "id": 2,
+            "name": "نامی نو",
+            "delivery": true,
+            "settlement": true,
+            "waste": true,
+            "returnBack": false,
+            "gift": true,
+            "returnPolicy": null,
+            "wastePolicy": null,
+            "firstName": null,
+            "lastName": null,
+            "legalName": null,
+            "deliveryPolicy": "با افزایش تعداد خرید کالاهای مختلف از تخفیف های پلکانی استفاده کنید و سود خود را به مقدار قابل ملاحظه ای افزایش دهید     *     \n\nمدت زمان تحویل ضایعات از تاریخ انقضای محصول، تا پنج روز کاری می‌باشد",
+            "maxDiscountPercent": 40,
+            "maxTotalDiscountPercent": 40,
+            "maxPromotionDiscountPercent": 20
+        },
+        "inventoryDoctypeId": 3,
+        "refNo": null,
+        "refDate": null,
+        "manualDate": null,
+        "description": null,
+        "proxyId": null,
+        "transferee": "عباس بوعذار",
+        "deliverer": "احمد ذوقی",
+        "corrective": false,
+        "inventoryDocumentReferenceId": null,
+        "items": [
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 1,
+                "productUnitId": 12,
+                "productId": 256,
+                "productArticleId": 112
+            },
+            {
+                "id": null,
+                "quantity": 20,
+                "rowNumber": 2,
+                "productUnitId": 12,
+                "productId": 212,
+                "productArticleId": 163
+            }
+        ]
+    }
+}
