@@ -1,0 +1,14 @@
+{
+    "corrective": false,
+    "deliverer": "احمد ذوقی",
+    "description": null,
+    "dispatchInventoryId": 6,
+    "binInventoryId": 3643,
+    "driverId": 100000007,
+    "inventoryDoctypeId": 3,
+    "manualDate": "2024-02-25T20:30:00",
+    "shippingPackageIds": [],
+    "tripRequestIds": [],
+    "transferee": "عباس بوعذار",
+    "type": "BOTH"
+}
