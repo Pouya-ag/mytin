@@ -1,0 +1,182 @@
+{
+    "depot" : [
+    {
+      "productArticleId": 2129,
+      "productId": 256,
+      "code": "10101200",
+      "dockQuantity": 20,
+      "productUnitId": 1,
+      "productUnit": {
+        "id": 1,
+        "name": "عدد",
+        "decimalPlaces": 0,
+        "ttmsId": null,
+        "measuring": false
+      },
+      "name": "الویه مرغ 200 گرمی",
+      "barcode": "6262862300016",
+      "storageConditionId": 1,
+      "sortOrder": 2,
+      "usedItem": false,
+      "dockInventory": [
+        {
+          "text": "انبار بار انداز مویرگی - به روز فن آور - شهر ری",
+          "value": 5658
+        }
+      ],
+      "dockInventoryId": 5658,
+      "fulfillmentQuantity": 0,
+      "depotQuantity": 0
+    },
+    {
+      "productArticleId": 2130,
+      "productId": 212,
+      "code": "10102200",
+      "dockQuantity": 20,
+      "productUnitId": 1,
+      "productUnit": {
+        "id": 1,
+        "name": "عدد",
+        "decimalPlaces": 0,
+        "ttmsId": null,
+        "measuring": false
+      },
+      "name": "الویه ژامبون 200 گرمی( 30 عددی)",
+      "barcode": "6262862300030",
+      "storageConditionId": 1,
+      "sortOrder": 1,
+      "usedItem": false,
+      "dockInventory": [
+        {
+          "text": "انبار بار انداز مویرگی - به روز فن آور - شهر ری",
+          "value": 5658
+        }
+      ],
+      "dockInventoryId": 5658,
+      "fulfillmentQuantity": 0,
+      "depotQuantity": 0
+    }
+        ],
+    "fulfillment" : [
+        {"productArticleId":163,
+        "productId":212,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه  ژامبون 200 گرمی",
+        "barcode":"6262862300030",
+        "storageConditionId":1,
+        "sortOrder":1,
+        "usedItem":false,
+        "fulfillmentInventory":[{"text":"انبار پردازش خ دماوند","value":5}],
+        "fulfillmentInventoryId":5,
+        "fulfillmentQuantity":20,
+        "depotQuantity":0,
+        "depotInventoryId":null},
+        {"productArticleId":112,
+        "productId":256,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه مرغ  200 گرمی",
+        "barcode":"6262862300016",
+        "storageConditionId":1,
+        "sortOrder":2,
+        "usedItem":false,
+        "fulfillmentInventory":[{"text":"انبار پردازش خ دماوند","value":5}],
+        "fulfillmentInventoryId":5,
+        "fulfillmentQuantity":20,
+        "depotQuantity":0,
+        "depotInventoryId":null}
+        ],
+    "dock": [
+    {
+      "productArticleId": 2129,
+      "productId": 256,
+      "code": "10101200",
+      "dockQuantity": 20,
+      "productUnitId": 1,
+      "productUnit": {
+        "id": 1,
+        "name": "عدد",
+        "decimalPlaces": 0,
+        "ttmsId": null,
+        "measuring": false
+      },
+      "name": "الویه مرغ 200 گرمی",
+      "barcode": "6262862300016",
+      "storageConditionId": 1,
+      "sortOrder": 2,
+      "usedItem": false,
+      "depotInventory": [
+        {
+          "text": "انبار دپو مویرگی- به روز فن آور - شهر ری",
+          "value": 5656
+        },
+        {
+          "text": "انبار دپوی قرنطینه - به روز فن آور - شهر ری",
+          "value": 5663
+        },
+        {
+          "text": "انبار دپوی تغییر قیمت- به روز فن آور - شهر ری",
+          "value": 5665
+        }
+      ],
+      "depotInventoryId": 5656,
+      "depotQuantity": 20,
+      "fulfillmentQuantity": 0,
+      "fulfillmentInventoryId": null
+    },
+    {
+      "productArticleId": 2130,
+      "productId": 212,
+      "code": "10102200",
+      "dockQuantity": 20,
+      "productUnitId": 1,
+      "productUnit": {
+        "id": 1,
+        "name": "عدد",
+        "decimalPlaces": 0,
+        "ttmsId": null,
+        "measuring": false
+      },
+      "name": "الویه ژامبون 200 گرمی( 30 عددی)",
+      "barcode": "6262862300030",
+      "storageConditionId": 1,
+      "sortOrder": 1,
+      "usedItem": false,
+      "depotInventory": [
+        {
+          "text": "انبار دپو مویرگی- به روز فن آور - شهر ری",
+          "value": 5656
+        },
+        {
+          "text": "انبار دپوی قرنطینه - به روز فن آور - شهر ری",
+          "value": 5663
+        },
+        {
+          "text": "انبار دپوی تغییر قیمت- به روز فن آور - شهر ری",
+          "value": 5665
+        }
+      ],
+      "depotInventoryId": 5656,
+      "depotQuantity": 20,
+      "fulfillmentQuantity": 0,
+      "fulfillmentInventoryId": null
+    }
+    ],
+    "seller" : [
+        {"productArticleId":163,
+        "productId":212,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه  ژامبون 200 گرمی",
+        "barcode":"6262862300030",
+        "quantity":20},
+        {"productArticleId":112,
+        "productId":256,
+        "productUnitId":12,
+        "productUnit":{"id":12,"name":"بسته","decimalPlaces":0,"ttmsId":null},
+        "name":"الویه مرغ  200 گرمی",
+        "barcode":"6262862300016",
+        "quantity":20}
+    ]
+}
