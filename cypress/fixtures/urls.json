@@ -3,7 +3,7 @@
     "URL_stage" : "https://panel.stage.beroozresaan.com/",
     "URL_stage146" : "http://192.168.7.146",
     "URL_api" : "https://api.beroozresaan.com/api",
-    "admin_api" : ":7000/api/admin",
+    "admin_api" : ":7071/api/admin",
     "customer_api" : ":7005/api",
     "customer" : ":7006",
     "admin" : ":7001",

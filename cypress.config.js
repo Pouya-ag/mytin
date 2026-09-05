@@ -7,9 +7,19 @@ module.exports = defineConfig({
   reporter: 'cypress-mochawesome-reporter',
   video: true,
   e2e: {
+    experimentalRunAllSpecs: true,
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
       on("task", {
+        
+        setData: (value) => {
+          return (data = value);
+        },
+
+        getData: () => {
+          return data;
+        },
+
         async connectDB(query){
           const client = new Client({
             user: "pouya_agh",

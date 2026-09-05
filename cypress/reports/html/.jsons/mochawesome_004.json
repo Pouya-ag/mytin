@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-09-05T09:07:40.631Z",
+    "end": "2026-09-05T09:07:51.641Z",
+    "duration": 11010,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "165e004f-8145-4c14-9288-40e5dbefe730",
+      "title": "",
+      "fullFile": "cypress/e2e/AutoTests/Admin/PreDocuments/BinDock.cy.js",
+      "file": "cypress/e2e/AutoTests/Admin/PreDocuments/BinDock.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "56dc5193-11f2-45e9-8bbb-b631287c5f0a",
+          "title": "pre-document fulfillment to dispatch",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "call api to create new reference \"dock to fulfillment\", pre-ducument \"to dock\", \"dock to fulfillment\" then pre-document fulfillment to dispatch",
+              "fullTitle": "pre-document fulfillment to dispatch call api to create new reference \"dock to fulfillment\", pre-ducument \"to dock\", \"dock to fulfillment\" then pre-document fulfillment to dispatch",
+              "timedOut": null,
+              "duration": 9095,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(`${_urls.URL}${_urls.admin}`);\ncy.wait(2000);\ncy.intercept('POST', `${_urls.URL}:7071/api/pub/account/login`).as('get-accessToken');\ncy.intercept('POST', `${_urls.URL}${_urls.admin_api}/inventory-document/bin-to-dock`).as('get-dockId');\nlet login = new _home.Login2();\nlogin.usernameInput();\nlogin.passwordInput();\nlogin.LoginBtn();\ncy.wait(3000);\ncy.get('.sidebar').should('be.visible');\n// reference Dock and Dock to Fulfillment *REST*\ncy.fixture(\"CreateDock\").then(data => {\n  let date = new _gelobalMethod.DateTime(1);\n  let time = date.liveDate();\n  let body = data;\n  body[\"manualDate\"] = `${time}T20:30:00`;\n  body[\"fulfillmentInventory\"] = true;\n  body[\"fulfillmentInventoryGroupId\"] = 1;\n  body[\"items\"] = _Items.fulfillment;\n  date = new _gelobalMethod.DateTime(0);\n  time = date.liveDate();\n  cy.task(\"connectDB\", `\n        SELECT id_pk FROM Dispatch.seller_delivery_shift sds\n        WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2;`).then(response => {\n    body[\"sellerDeliveryShiftId\"] = response[0].id_pk;\n  });\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.request({\n      method: 'POST',\n      url: `${_urls.URL}${_urls.admin_api}${_urls.InvDocRef}/to-dock`,\n      headers: {\n        Authorization: `Bearer ${res}`\n      },\n      body: body\n    }).as('create-reference');\n  });\n});\n// pre-document Dock *REST*\ncy.fixture(\"PreDock\").then(data => {\n  let date = new _gelobalMethod.DateTime(1);\n  let time = date.liveDate();\n  let body = data.Dock;\n  body[\"manualDate\"] = `${time}T20:30:00`;\n  body[\"refDate\"] = `${time}T20:30:00`;\n  cy.get('@create-reference').then(res => {\n    body[\"inventoryDocumentReferenceId\"] = res.body.id;\n  });\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.request({\n      method: 'POST',\n      url: `${_urls.URL}${_urls.admin_api}/inventory-document/to-dock`,\n      headers: {\n        Authorization: `Bearer ${res}`\n      },\n      body: body\n    }).as('create-preDock');\n  });\n  cy.wait(500);\n  cy.get('@get-accessToken').its('response.body.accessToken').then(token => {\n    cy.get('@create-preDock').then(data => {\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/to-dock/${data.body.id}/confirm`,\n        headers: {\n          Authorization: `Bearer ${token}`\n        }\n      }).as('confirm-predock');\n    });\n  });\n});\n// pre-document Dock to Fulfillment *REST*\ncy.fixture(\"PreDock\").then(data => {\n  let date = new _gelobalMethod.DateTime(1);\n  let time = date.liveDate();\n  let body = data.DockFulfillment;\n  body[\"manualDate\"] = `${time}T20:30:00`;\n  cy.get('@create-reference').then(res => {\n    body[\"inventoryDocumentReferenceId\"] = res.body.id + 1;\n  });\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.request({\n      method: 'POST',\n      url: `${_urls.URL}${_urls.admin_api}/inventory-document/dock-to-fulfillment`,\n      headers: {\n        Authorization: `Bearer ${res}`\n      },\n      body: body\n    }).as('create-preDockfulfillment');\n  });\n  cy.wait(500);\n  cy.get('@get-accessToken').its('response.body.accessToken').then(token => {\n    cy.get('@create-preDockfulfillment').then(data => {\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/dock-to-fulfillment/${data.body.id}/confirm`,\n        headers: {\n          Authorization: `Bearer ${token}`\n        }\n      }).as('confirm-preDockfulfillment');\n    });\n  });\n});\n// trip-request *REST* \nlet date = new _gelobalMethod.DateTime(1);\nlet time = date.liveDate();\nlet customerID = 15241;\nlet sellerCustomerID = 40414;\n// let customerID = 32738;\n// let sellerCustomerID = 60272;\nlet tripRequest = new _database.Triprequest(time, customerID);\nlet newObject = {};\ntripRequest.getVatCategory().then(result => {\n  newObject.TaxPercent = result[0];\n  newObject.TollPercent = result[1];\n  newObject.Name = result[2];\n  cy.task('setData', newObject);\n});\ncy.task('getData').then(myData => {\n  tripRequest.getPrice().then(result => {\n    myData.UnitMinPayable = result[0];\n    myData.UnitPriceBeforeDiscount = result[1];\n    cy.task('setData', myData);\n  });\n});\ncy.task('getData').then(myData => {\n  tripRequest.getSellerDeliveryShift().then(result => {\n    myData.sellerDeliveryShiftId = result;\n    cy.task('setData', myData);\n  });\n});\ncy.task('getData').then(myData => {\n  myData.UnitTax = myData.UnitPriceBeforeDiscount * (myData.TaxPercent / 100);\n  myData.UnitToll = myData.UnitPriceBeforeDiscount * (myData.TollPercent / 100);\n  myData.Tax = myData.UnitTax * 20;\n  myData.Toll = myData.UnitToll * 20;\n  myData.UnitPayable = myData.UnitPriceBeforeDiscount + myData.UnitTax + myData.UnitToll;\n  cy.task('setData', myData);\n});\n// tripRequest.cancelExistTripRequest().then(result => {\n//     if (result.length != 0) {\n//         cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n//             cy.request({method: 'PUT', url:`${URL}${admin_api}/trip-requests/cancel/${result[0].id_pk}`, headers:{Authorization:`Bearer ${res}`}})\n//         })   \n//     }\n// })\ncy.task('getData').then(myJson => {\n  cy.fixture(\"TripRequest\").then(data => {\n    data.sellerDeliveryShiftId = myJson.sellerDeliveryShiftId;\n    const items = data.parcelRequest.items;\n    for (let i = 0; i < items.length; i++) {\n      const item = items[i];\n      item.vatCategory.taxPercent = myJson.TaxPercent;\n      item.vatCategory.tollPercent = myJson.TollPercent;\n      item.vatCategory.name = myJson.Name;\n      item.deliveryRequestItemMetaIn.unitMinPayable = Math.ceil(myJson.UnitMinPayable);\n      item.deliveryRequestItemMetaIn.unitPriceBeforeDiscount = Math.ceil(myJson.UnitPriceBeforeDiscount);\n      item.deliveryRequestItemMetaIn.unitTax = Math.ceil(myJson.UnitTax);\n      item.deliveryRequestItemMetaIn.unitToll = Math.ceil(myJson.UnitToll);\n      item.tax = Math.ceil(myJson.Tax);\n      item.toll = Math.ceil(myJson.Toll);\n      item.deliveryRequestItemMetaIn.unitPayable = Math.ceil(myJson.UnitPayable);\n    }\n    cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/trip-requests`,\n        headers: {\n          Authorization: `Bearer ${res}`\n        },\n        body: data\n      }).as('create-triprequest');\n    });\n  });\n});\ncy.wait(1500);\n// tour *REST*\ncy.fixture(\"CreateTour\").then(data => {\n  cy.get('@get-accessToken').its('response.body.accessToken').then(token => {\n    data.driverId = 100000007;\n    data.courierId = 100000007;\n    tripRequest.getVehicle().then(vehicle => {\n      data.vehicleId = vehicle[4].id_pk;\n      cy.get('@create-triprequest').then(triprequest => {\n        data.tripsIn[0].tripId = triprequest.body.tripId;\n        cy.request({\n          method: 'POST',\n          url: `${_urls.URL}${_urls.admin_api}/tours`,\n          headers: {\n            Authorization: `Bearer ${token}`\n          },\n          body: data\n        }).as('tour');\n      });\n    });\n  });\n});\ncy.wait(1500);\n// get token app \nlet driverUser = {\n  \"clientType\": \"ANDROID\",\n  \"firebaseToken\": \"\",\n  \"panelType\": \"DRIVER\",\n  \"password\": \"123456\",\n  \"uniqueId\": \"3a743fc1f2ac1405\",\n  \"username\": \"09362348839\"\n};\ncy.request({\n  method: 'POST',\n  url: `${_urls.URL}:7071/api/pub/account/login`,\n  body: driverUser\n}).as('tokenDriver');\ncy.wait(1000);\n// start tour on app\ncy.get('@tour').its('body.id').then(tourId => {\n  cy.get('@tokenDriver').its('body').then(res => {\n    cy.request({\n      method: 'PUT',\n      url: `http://192.168.7.10:7071/api/driver/tours/status/${tourId}/start`,\n      headers: {\n        Authorization: `Bearer ${res.accessToken}`\n      }\n    });\n  });\n});\ncy.wait(1000);\n// delivery product (it should be partial delivery)\ncy.get('@create-triprequest').then(triprequest => {\n  let dp = {\n    \"description\": \"\",\n    \"items\": [{\n      \"conflictReasonId\": \"42\",\n      \"deliveredPackageQuantity\": \"15\",\n      \"deliveredQuantity\": \"15\",\n      \"id\": \"7363802\",\n      \"notDeliveredPackageQuantity\": \"6\",\n      \"notDeliveredQuantity\": \"6\",\n      \"productArticleId\": 112\n    }, {\n      \"conflictReasonId\": \"42\",\n      \"deliveredPackageQuantity\": \"16\",\n      \"deliveredQuantity\": \"16\",\n      \"id\": \"7363803\",\n      \"notDeliveredPackageQuantity\": \"5\",\n      \"notDeliveredQuantity\": \"5\",\n      \"productArticleId\": 163\n    }],\n    \"lat\": 35.8021317,\n    \"lng\": 51.4955733,\n    \"status\": \"PARTIAL_DELIVERED\",\n    \"transferee\": \"\"\n  };\n  for (let i = 0; i < triprequest.body.parcelRequest.items.length; i++) {\n    dp.items[i][\"id\"] = triprequest.body.parcelRequest.items[i].id;\n    dp.items[i][\"productArticleId\"] = triprequest.body.parcelRequest.items[i].productArticleId;\n  }\n  cy.get('@tokenDriver').its('body').then(res => {\n    cy.request({\n      method: 'PUT',\n      url: `http://192.168.7.10:7071/api/driver/delivery-requests/${triprequest.body.parcelRequest.id}`,\n      headers: {\n        Authorization: `Bearer ${res.accessToken}`\n      },\n      body: dp\n    });\n  });\n});\ncy.wait(1000);\n// here i have to call a rest to get new amount\ncy.get('@tokenDriver').its('body').then(res => {\n  cy.get('@create-triprequest').then(triprequest => {\n    cy.request({\n      method: 'GET',\n      url: `http://192.168.7.10:7071/api/driver/trip-requests/${triprequest.body.id}`,\n      headers: {\n        Authorization: `Bearer ${res.accessToken}`\n      }\n    }).as('newValue');\n  });\n});\ncy.wait(1500);\n// payment trip request (it should get amount after partial delivered)\ncy.get('@newValue').then(newValue => {\n  let ptr = {\n    \"amount\": \"6550402\",\n    \"currencyId\": \"IRR\",\n    \"paymentConfigId\": 12,\n    \"paymentRequestItemId\": 1069361,\n    \"sellerCustomerId\": 59870,\n    \"sellerId\": 2\n  };\n  ptr[\"amount\"] = newValue.body.paymentRequests[0].items[0].amount;\n  ptr[\"sellerCustomerId\"] = newValue.body.sellerCustomerId;\n  ptr[\"paymentRequestItemId\"] = newValue.body.paymentRequests[0].items[0].id;\n  cy.wait(500);\n  cy.get('@tokenDriver').its('body').then(res => {\n    cy.request({\n      method: 'POST',\n      url: `http://192.168.7.10:7071/api/driver/financial/payments`,\n      headers: {\n        Authorization: `Bearer ${res.accessToken}`\n      },\n      body: ptr\n    });\n  });\n});\ncy.wait(1000);\n// finish tour\ncy.get('@tour').its('body.id').then(tourId => {\n  cy.get('@tokenDriver').its('body').then(res => {\n    cy.request({\n      method: 'PUT',\n      url: `http://192.168.7.10:7071/api/driver/tours/status/${tourId}/finish`,\n      headers: {\n        Authorization: `Bearer ${res.accessToken}`\n      }\n    });\n  });\n});\ncy.wait(1000);\n// shipack for trip-request *REST*\ncy.fixture(\"Shipack\").then(data => {\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.get('@create-triprequest').then(triprequest => {\n      data.deliveryRequestId = triprequest.body.parcelRequest.items[0].deliveryRequestInfo.id;\n      data.shippingPackageItemIns[0].deliveryRequestItemId = triprequest.body.parcelRequest.items[0].id;\n      data.shippingPackageItemIns[1].deliveryRequestItemId = triprequest.body.parcelRequest.items[1].id;\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/shipping-packages`,\n        headers: {\n          Authorization: `Bearer ${res}`\n        },\n        body: data\n      }).as('shipack');\n    });\n  });\n});\ncy.wait(1000);\n// pre-document Fulfillment to Dispatch *REST*\ncy.fixture(\"FulfillmentDispatch\").then(data => {\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.get('@shipack').then(shipack => {\n      let date = new _gelobalMethod.DateTime(1);\n      let time = date.liveDate();\n      data.shippingPackageId = shipack.body.id;\n      data.manualDate = `${time}T20:30:00`;\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/fulfillment-to-dispatch`,\n        headers: {\n          Authorization: `Bearer ${res}`\n        },\n        body: data\n      }).as('create-fulfillmentDispatch');\n    });\n  });\n  cy.wait(1500);\n  cy.get('@get-accessToken').its('response.body.accessToken').then(token => {\n    cy.get('@create-fulfillmentDispatch').then(data => {\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/fulfillment-to-dispatch/${data.body.id}/confirm`,\n        headers: {\n          Authorization: `Bearer ${token}`\n        }\n      }).as('confirm-fulfillmentDispatch');\n    });\n  });\n});\n// pre-document Dispatch to Bin\ncy.fixture(\"DispatchBin\").then(data => {\n  cy.get('@get-accessToken').its('response.body.accessToken').then(res => {\n    cy.get('@shipack').then(shipack => {\n      let date = new _gelobalMethod.DateTime(1);\n      let time = date.liveDate();\n      data.shippingPackageIds[0] = shipack.body.id;\n      data.manualDate = `${time}T20:30:00`;\n      let idDriver = 100000007;\n      data.driverId = idDriver;\n      cy.task(\"connectDB\", `\n                    SELECT inventory_id_fk FROM Dispatch.driver iid\n                    WHERE iid.id_pk = ${idDriver};`).then(vehicle => {\n        data.binInventoryId = vehicle[0].inventory_id_fk;\n      });\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/dispatch-to-bin`,\n        headers: {\n          Authorization: `Bearer ${res}`\n        },\n        body: data\n      }).as('create-dispatchBin');\n    });\n  });\n  cy.wait(500);\n  cy.get('@get-accessToken').its('response.body.accessToken').then(token => {\n    cy.get('@create-dispatchBin').then(data => {\n      cy.request({\n        method: 'POST',\n        url: `${_urls.URL}${_urls.admin_api}/inventory-document/dispatch-to-bin/${data.body.id}/confirm`,\n        headers: {\n          Authorization: `Bearer ${token}`\n        }\n      }).as('confirm-dispatchBin');\n    });\n  });\n});\n// test Bin to Dock\ncy.gcclick('div', ' عملیات انبار ');\ncy.wait(200);\ncy.gcclick('div', ' پیش اسناد ');\ncy.wait(200);\n// go to create new document page\nlet referencepage = new _references.ReferencePage('/pre-documents', '/bin-to-dock');\nreferencepage.goToPage();\nreferencepage.createPage();\ndate = new _preDocuments.SetDateTime('[name=\"تاریخ مؤثر\"]');\ndate.setDate();\ncy.wait(1000);\n// should save tour ID for test without request rest\ncy.gclick('[name=\"تور\"]');\ncy.wait(200);\ncy.get('@tour').its('body.id').then(tourId => {\n  cy.get('.modal-body').within(() => {\n    cy.get('.row > .mb-3').first().within(() => {\n      cy.gtype('.input-group > input', tourId);\n    });\n    cy.gclick('.btn-primary');\n  });\n});\ncy.wait(1000);\ncy.get('[name=\"انبارک مبدا\"]').select('انبارک');\ncy.wait(1000);\ncy.get('[name=\"انبار مقصد\"]').find('.ac-form-control').click();\ncy.gcclick('.badge-secondary', ' 164 ');\ncy.wait(500);\n// here i have to add products with add rest of products button or manually\ncy.gcclick('button', ' درج کالاهای بازگشتی تور ');\ncy.wait(5000);\n// save document\ncy.gclick('#footer-submit-button');\ncy.wait(5000);\nlet product = [{\n  \"name\": \"الویه  ژامبون 200 گرمی\"\n}, {\n  \"name\": \"الویه مرغ  200 گرمی\"\n}];\n// query to check products on database\ncy.get('@tour').its('body.id').then(tourId => {\n  let binToDock = new _database.BinToDockDocument(tourId);\n  binToDock.getIdInventoryDocumentBinDock().then(res => {\n    cy.visit(`${_urls.URL}${_urls.admin}/documents/bin-to-dock/show/${res[0].id_pk}`);\n    cy.wait(3000);\n    let documentProducts = new _database.DocumentProducts(res[0].id_pk);\n    documentProducts.getProductFromDocument().then(response => {\n      expect(product.length).to.eq(response.length);\n      // sort array of object order by name\n      function sortArray(arr) {\n        return arr.slice().sort((a, b) => a.name.localeCompare(b.name));\n      }\n      let newproduct = sortArray(product);\n      let newresponse = sortArray(response);\n      for (let i = 0; i < product.length; i++) {\n        expect(newproduct[i].name).to.eq(newresponse[i].name);\n      }\n    });\n    cy.intercept('POST', `${_urls.URL}${_urls.admin_api}/inventory-document/bin-to-dock/${res[0].id_pk}/confirm`).as('confirm-dock');\n    let confirm = new _gelobalMethod.ConfirmPreDock('@confirm-dock');\n    confirm.buttonConfirm();\n    confirm.checkResponse();\n  });\n});",
+              "err": {
+                "message": "TypeError: Cannot read properties of undefined (reading 'id_pk')",
+                "estack": "TypeError: Cannot read properties of undefined (reading 'id_pk')\n    at Context.eval (webpack:///./cypress/e2e/AutoTests/Admin/PreDocuments/BinDock.cy.js:45:64)",
+                "diff": null
+              },
+              "uuid": "e5f21e2d-a43d-447e-83cd-8886e4842d8c",
+              "parentUUID": "56dc5193-11f2-45e9-8bbb-b631287c5f0a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "e5f21e2d-a43d-447e-83cd-8886e4842d8c"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 9095,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress/reports/html/.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

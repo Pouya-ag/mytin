@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-09-05T09:07:54.585Z",
+    "end": "2026-09-05T09:08:19.643Z",
+    "duration": 25058,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5213d23e-61dc-4cb6-b71b-9f55d4d2ec66",
+      "title": "",
+      "fullFile": "cypress/e2e/AutoTests/Admin/PreDocuments/DeclinedockDepot.cy.js",
+      "file": "cypress/e2e/AutoTests/Admin/PreDocuments/DeclinedockDepot.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "69c2de8d-45b1-41c3-960f-679dae6eaf34",
+          "title": "pre document for decline dock to depot",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "create new pre document in decline dock to depot",
+              "fullTitle": "pre document for decline dock to depot create new pre document in decline dock to depot",
+              "timedOut": null,
+              "duration": 23113,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(`${_urls.URL}${_urls.admin}`);\ncy.wait(2000);\ncy.intercept('POST', `${_urls.URL}:7071/api/pub/account/login`).as('get-accessToken');\ncy.intercept('POST', `${_urls.URL}${_urls.admin_api}/inventory-document/decline-dock-to-depot`).as('get-dockId');\nlet login = new _home.Login2();\nlogin.usernameInput();\nlogin.passwordInput();\nlogin.LoginBtn();\ncy.wait(3000);\ncy.get('.sidebar').should('be.visible');\n// go to pre document's page\ncy.gcclick('div', ' عملیات انبار ');\ncy.wait(200);\ncy.gcclick('div', ' پیش اسناد ');\ncy.wait(200);\n// go to create new document page\nlet referencepage = new _references.ReferencePage('/pre-documents', '/decline-dock-to-depot');\nreferencepage.goToPage();\nreferencepage.createPage();\n// form control\nlet date = new _preDocuments.SetDateTime('[name=\"تاریخ مؤثر\"]');\ndate.setDate();\ncy.gclick('[name=\"تامین کننده\"]');\ncy.wait(200);\ncy.gclick('.btn-primary');\ncy.gclick(':nth-child(2) > [aria-colindex=\"6\"] > :nth-child(1) > .text-center > .btn');\ncy.gtype('[name=\"تحویل گیرنده\"]', 'جعفر جعفری');\ncy.wait(200);\ncy.gtype('[name=\"تحویل دهنده\"]', 'موزع نامی نو');\ncy.wait(200);\ncy.fixture(\"Items\").then(file => {\n  cy.gtype('#barcode', file.depot[0].barcode);\n  cy.gclick('#submitButton');\n  cy.wait(1000);\n  cy.gtype('#barcode', file.depot[1].barcode);\n  cy.gclick('#submitButton');\n  cy.wait(1000);\n});\ncy.get(`tbody > :nth-child(1) > :nth-child(6)`).within(() => {\n  cy.get('div').first().within(() => {\n    cy.get('input').clear().type('20');\n  });\n});\ncy.wait(500);\ncy.get(`tbody > :nth-child(2) > :nth-child(6)`).within(() => {\n  cy.get('div').first().within(() => {\n    cy.get('input').clear().type('20');\n  });\n});\ncy.wait(500);\n// check number of products\n// let products = cy.get('.table-bordered > tbody > tr')\n// cy.get('@create-reference').then((res) => { \n//     products.should('have.length', res.body.items.length)\n// })\n// cy.wait(200)\n// save document\ncy.gclick('#footer-submit-button');\ncy.wait(3000);\nlet product = [{\n  \"name\": \"الویه  ژامبون 200 گرمی\"\n}, {\n  \"name\": \"الویه مرغ  200 گرمی\"\n}];\n// query to check products on database\ncy.get('@get-dockId').its('response.body.id').then(res => {\n  cy.task(\"connectDB\", `\n            SELECT name FROM Dispatch.product pro\n            JOIN Dispatch.product_article pa\n            ON pa.product_id_fk = pro.id_pk\n            JOIN Dispatch.inventory_document_item idi\n            ON idi.product_article_id_fk = pa.id_pk\n            WHERE idi.inventory_document_id_fk = ${res};`).then(response => {\n    expect(product.length).to.eq(response.length);\n    // sort array of object order by name\n    function sortArray(arr) {\n      return arr.slice().sort((a, b) => a.name.localeCompare(b.name));\n    }\n    let newproduct = sortArray(product);\n    let newresponse = sortArray(response);\n    for (let i = 0; i < product.length; i++) {\n      expect(newproduct[i].name).to.eq(newresponse[i].name);\n    }\n  });\n  cy.intercept('POST', `${_urls.URL}${_urls.admin_api}/inventory-document/decline-dock-to-depot/${res}/confirm`).as('confirm-dock');\n  let confirm = new _gelobalMethod.ConfirmPreDock('@confirm-dock');\n  confirm.buttonConfirm();\n  confirm.checkResponse();\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `:nth-child(2) > [aria-colindex=\"6\"] > :nth-child(1) > .text-center > .btn`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `:nth-child(2) > [aria-colindex=\"6\"] > :nth-child(1) > .text-center > .btn`, but never found it.\n    at Context.eval (webpack:///./cypress/support/commands.js:27:44)",
+                "diff": null
+              },
+              "uuid": "b5ceb0ed-85e2-40e4-9be3-98309351bb1b",
+              "parentUUID": "69c2de8d-45b1-41c3-960f-679dae6eaf34",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "b5ceb0ed-85e2-40e4-9be3-98309351bb1b"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 23113,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress/reports/html/.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

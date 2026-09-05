@@ -1,9 +1,9 @@
-import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
+import { URL, admin_api, admin, InvDocRef } from '../../../../fixtures/urls.json'
 import { Login2 } from '../../../../POM/home.pom'
-import { DateTime, ConfirmPreDock } from '../../../../POM/gelobalMethod.pom';
+import { DateTime, ConfirmPreDock, Pages, FormControl, SetDateTime, SetInventory } from '../../../../POM/gelobalMethod.pom';
 import { ReferencePage } from '../../../../POM/references.pom';
 import { depot, dock, fulfillment } from '../../../../fixtures/Items.json';
-import { SetDateTime, FormControl, AddProduct } from '../../../../POM/preDocuments.pom';
+import { AddProduct } from '../../../../POM/preDocuments.pom';
 
 
 
@@ -12,7 +12,7 @@ describe('pre-document fulfillment to dispatch', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/fulfillment-return`).as('get-dockId')
         
         let login = new Login2()
@@ -23,75 +23,75 @@ describe('pre-document fulfillment to dispatch', () => {
 
         cy.get('.sidebar').should('be.visible')
 
-        // create *rest* reference dock to fulfillment
-        cy.fixture("CreateDock").then((data) => {
-            let date = new DateTime(1)
-            let time = date.liveDate()
+        // // create *rest* reference dock to fulfillment
+        // cy.fixture("CreateDock").then((data) => {
+        //     let date = new DateTime(1)
+        //     let time = date.liveDate()
 
-            let body = data;
-            body["manualDate"] = `${time}T20:30:00`
-            body["fulfillmentInventory"] = true
-            body["fulfillmentInventoryGroupId"] = 1
-            body["items"] = fulfillment
+        //     let body = data;
+        //     body["manualDate"] = `${time}T20:30:00`
+        //     body["fulfillmentInventory"] = true
+        //     body["fulfillmentInventoryGroupId"] = 1
+        //     body["items"] = fulfillment
 
-            date = new DateTime(0)
-            time = date.liveDate()
-            cy.task("connectDB", `
-            SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
-            .then((response) => {
-                    body["sellerDeliveryShiftId"] = response[0].id_pk
-            })
+        //     date = new DateTime(0)
+        //     time = date.liveDate()
+        //     cy.task("connectDB", `
+        //     SELECT id_pk FROM Dispatch.seller_delivery_shift sds
+        //     WHERE sds.end_date_time = '${time} 10:30:00'`)
+        //     .then((response) => {
+        //             body["sellerDeliveryShiftId"] = response[0].id_pk
+        //     })
 
-            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
-            })
-        })
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+        //         cy.request({method: 'POST', url: `${URL}${admin_api}${InvDocRef}/to-dock`,headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-reference')
+        //     })
+        // })
 
-        // create *rest* pre-document to dock
-        cy.fixture("PreDock").then( data => {
-            let date = new DateTime(1)
-            let time = date.liveDate()
+        // // create *rest* pre-document to dock
+        // cy.fixture("PreDock").then( data => {
+        //     let date = new DateTime(1)
+        //     let time = date.liveDate()
 
-            let body = data.Dock;
-            body["manualDate"] = `${time}T20:30:00`
-            body["refDate"] = `${time}T20:30:00`
-            cy.get('@create-reference').then(res => {
-                body["inventoryDocumentReferenceId"] = res.body.id
-            })
+        //     let body = data.Dock;
+        //     body["manualDate"] = `${time}T20:30:00`
+        //     body["refDate"] = `${time}T20:30:00`
+        //     cy.get('@create-reference').then(res => {
+        //         body["inventoryDocumentReferenceId"] = res.body.id
+        //     })
             
-            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDock')
-            })
-            cy.wait(500)
-            cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
-                cy.get('@create-preDock').then(data => {
-                    cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-predock')
-                })
-            })
-        })
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+        //         cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDock')
+        //     })
+        //     cy.wait(500)
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+        //         cy.get('@create-preDock').then(data => {
+        //             cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/to-dock/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-predock')
+        //         })
+        //     })
+        // })
 
-        // create *rest* pre-document dock to fulfillment
-        cy.fixture("PreDock").then( data => {
-            let date = new DateTime(1)
-            let time = date.liveDate()
+        // // create *rest* pre-document dock to fulfillment
+        // cy.fixture("PreDock").then( data => {
+        //     let date = new DateTime(1)
+        //     let time = date.liveDate()
 
-            let body = data.DockFulfillment;
-            body["manualDate"] = `${time}T20:30:00`
-            cy.get('@create-reference').then(res => {
-                body["inventoryDocumentReferenceId"] = res.body.id + 1
-            })
+        //     let body = data.DockFulfillment;
+        //     body["manualDate"] = `${time}T20:30:00`
+        //     cy.get('@create-reference').then(res => {
+        //         body["inventoryDocumentReferenceId"] = res.body.id + 1
+        //     })
             
-            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-fulfillment`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDockfulfillment')
-            })
-            cy.wait(500)
-            cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
-                cy.get('@create-preDockfulfillment').then(data => {
-                    cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-fulfillment/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-preDockfulfillment')
-                })
-            })
-        })
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+        //         cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-fulfillment`, headers:{Authorization:`Bearer ${res}`}, body: body}).as('create-preDockfulfillment')
+        //     })
+        //     cy.wait(500)
+        //     cy.get('@get-accessToken').its('response.body.accessToken').then(token => {
+        //         cy.get('@create-preDockfulfillment').then(data => {
+        //             cy.request({method: 'POST', url: `${URL}${admin_api}/inventory-document/dock-to-fulfillment/${data.body.id}/confirm`, headers:{Authorization:`Bearer ${token}`}}).as('confirm-preDockfulfillment')
+        //         })
+        //     })
+        // })
 
 
    
@@ -107,51 +107,56 @@ describe('pre-document fulfillment to dispatch', () => {
         cy.wait(200)
 
         // go to create new document page
-        let referencepage = new ReferencePage('/pre-documents', '/fulfillment-return')
-        referencepage.goToPage()
-        referencepage.createPage()
+        let Page = new Pages('/pre-documents', '/fulfillment-return')
+        Page.mainPage()
+        Page.createPage()
 
         // form control
         let date = new SetDateTime('[name="تاریخ مؤثر"]')
         date.setDate()
 
         // set seller
-        cy.gclick('[name="تامین کننده"]')
-        cy.wait(200)
-        cy.get('.modal-body').within(() => {
-            cy.get('.row > .mb-3').first().within(() => {
-                cy.gtype('.input-group > input', '2')
-            })
-            cy.gclick('.btn-primary')
-        })
-        cy.wait(1000)
+        let seller = new FormControl('[name="تامین کننده"]')
 
+        seller.selectOnInput()
+        seller.setSeller()
+        seller.btnSearchModal()
+        
+
+
+        let originInventory = new SetInventory('[name="انبار مبدا"]', '[title="انبار پردازش شهر ری"]')
+        originInventory.setValueWithCheck()
+
+        let destinationInventory = new SetInventory('[name="انبار مقصد"]', '[title="انبار دپو - نامی نو - شهر ری"]')
+        destinationInventory.setValueWithCheck()
+
+        
         // 
-        cy.get('[name="انبار مبدا"]').within(() => {
-            cy.get('.ac-wrapper > .input-group > .ac-form-control > .ac-selected-items').then($el => {
-                const hasValue = $el.text().trim() == '';
-                if (hasValue) {
-                    cy.gclick('.ac-wrapper > .input-group > .ac-form-control')
-                    cy.gclick('[title="انبار پردازش شهر ری"]')
-                }
-            })
-        })
+        // cy.get('[name="انبار مبدا"]').within(() => {
+        //     cy.get('.ac-wrapper > .input-group > .ac-form-control > .ac-selected-items').then($el => {
+        //         const hasValue = $el.text().trim() == '';
+        //         if (hasValue) {
+        //             cy.gclick('.ac-wrapper > .input-group > .ac-form-control')
+        //             cy.gclick('[title="انبار پردازش شهر ری"]')
+        //         }
+        //     })
+        // })
 
-        // 
-        cy.get('[name="انبار مقصد"]').within(() => {
-            cy.get('.ac-wrapper > .input-group > .ac-form-control > .ac-selected-items').then($el => {
-                const hasValue = $el.text().trim() == '';
-                if (hasValue) {
-                    cy.gclick('.ac-wrapper > .input-group > .ac-form-control')
-                    cy.gclick('[title="انبار دپو - نامی نو - شهر ری"]')
-                }
-            })
-        })
+        // // 
+        // cy.get('[name="انبار مقصد"]').within(() => {
+        //     cy.get('.ac-wrapper > .input-group > .ac-form-control > .ac-selected-items').then($el => {
+        //         const hasValue = $el.text().trim() == '';
+        //         if (hasValue) {
+        //             cy.gclick('.ac-wrapper > .input-group > .ac-form-control')
+        //             cy.gclick('[title="انبار دپو - نامی نو - شهر ری"]')
+        //         }
+        //     })
+        // })
 
-        cy.gtype('[name="تحویل دهنده"]', 'موزع نامی نو')
+        cy.gtype('[name="تحویل دهنده"]', 'تحویل دهنده نامی نو')
         cy.wait(200)
 
-        cy.gtype('[name="تحویل گیرنده"]', 'جعفر جعفری')
+        cy.gtype('[name="تحویل گیرنده"]', 'تحویل گیرنده نامی نو')
         cy.wait(200)
 
         cy.gtype('[name="شماره فاکتور طرف"]', '123456789')
@@ -168,6 +173,7 @@ describe('pre-document fulfillment to dispatch', () => {
                 cy.get('td > .input-group > input').clear().type(20)
             })
         }
+        cy.wait(5555555)
 
 
         let product = [{"name":"الویه  ژامبون 200 گرمی"},{"name":"الویه مرغ  200 گرمی"}]

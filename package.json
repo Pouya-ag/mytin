@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "cypress": "^13.4.0",
+    "cypress": "^13.7.3",
     "cypress-mochawesome-reporter": "^3.6.0",
     "mocha-parallel-tests": "^2.3.0",
     "pg": "^8.11.3"

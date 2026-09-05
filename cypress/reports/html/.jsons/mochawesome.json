@@ -1,58 +1,80 @@
 {
   "stats": {
-    "suites": 1,
-    "tests": 1,
+    "suites": 4,
+    "tests": 5,
     "passes": 0,
     "pending": 0,
-    "failures": 1,
-    "start": "2023-10-11T13:08:34.444Z",
-    "end": "2023-10-11T13:08:45.465Z",
-    "duration": 11021,
-    "testsRegistered": 1,
+    "failures": 5,
+    "start": "2026-09-05T09:07:04.100Z",
+    "end": "2026-09-05T09:07:05.539Z",
+    "duration": 1439,
+    "testsRegistered": 10,
     "passPercent": 0,
     "pendingPercent": 0,
     "other": 0,
     "hasOther": false,
-    "skipped": 0,
-    "hasSkipped": false
+    "skipped": 5,
+    "hasSkipped": true
   },
   "results": [
     {
-      "uuid": "23a87dc4-824b-44d4-92ab-04a252f2e418",
+      "uuid": "5f0a0b0e-ce88-4d09-a28a-fcb964800ea7",
       "title": "",
-      "fullFile": "cypress\\e2e\\AutoTests\\Customer\\Create-tripRequest.cy.js",
-      "file": "cypress\\e2e\\AutoTests\\Customer\\Create-tripRequest.cy.js",
+      "fullFile": "cypress/e2e/API/Test_api.cy.js",
+      "file": "cypress/e2e/API/Test_api.cy.js",
       "beforeHooks": [],
       "afterHooks": [],
       "tests": [],
       "suites": [
         {
-          "uuid": "9e895d11-d901-452a-bc5f-fb29b4ec8b1a",
-          "title": "create trip request",
+          "uuid": "5c37e767-fab2-446a-8586-e8cf4f29b008",
+          "title": "Account public",
           "fullFile": "",
           "file": "",
           "beforeHooks": [],
           "afterHooks": [],
           "tests": [
             {
-              "title": "create a trip request",
-              "fullTitle": "create trip request create a trip request",
+              "title": "check user",
+              "fullTitle": "Account public check user",
               "timedOut": null,
-              "duration": 8266,
+              "duration": 412,
               "state": "failed",
               "speed": null,
               "pass": false,
               "fail": true,
               "pending": false,
               "context": null,
-              "code": "cy.gclick('[href=\"/trip-requests/create/sellers\"]');\ncy.wait(500);\ncy.get('[class=\"text-bold\"]').contains('نامی نو').click();\ncy.wait(500);\ncy.get('div.header-container > .q-page > :nth-child(2)').within(() => {\n  cy.get('.q-radio__inner').within(() => {\n    cy.get('input[type=\"radio\"]').should('be.checked');\n  });\n});\ncy.gclick('[href=\"/trip-requests/create/sellers/2/delivery-requests#PARCEL\"]');\ncy.wait(500);\ncy.get(':nth-child(1) > .flex-column').within(() => {\n  cy.get('.flex.items-center > :nth-child(1)').within(() => {\n    cy.gclick('.q-icon');\n    for (let i = 0; i < 10; i++) {\n      cy.gclick('.flex > .q-field > .q-field__inner > .q-field__control > .q-field__prepend > .q-icon');\n    }\n  });\n});\ncy.get(':nth-child(3) > .flex-column > .flex.items-center > :nth-child(1)').within(() => {\n  cy.gclick('.q-icon');\n  for (let i = 0; i < 10; i++) {\n    cy.gclick('.flex > .q-field > .q-field__inner > .q-field__control > .q-field__prepend > .q-icon');\n  }\n});\ncy.intercept('POST', `${_urls.URL}${_urls.customer_api}/customer/trip-requests`).as('trip-request');\ncy.gclick('.q-pa-md > .q-btn > .q-btn__content');\ncy.gclick('.q-pa-sm');\ncy.wait('@trip-request').then(res => {\n  let response = JSON.stringify(res);\n  cy.log(response);\n});\ncy.get('.text-h5', {\n  timeout: 10000\n}).should('be.visible');\ncy.get('.text-h5').contains('سفارش شما با موفقیت ثبت شد!');",
+              "code": "const body = {\n  \"username\": _loginInfo.username\n};\nlet baseUrl = new _urls.BaseURL('/pub', '/account');\ncy.request({\n  method: 'POST',\n  url: `${baseUrl.adminBaseURL()}/check-user`,\n  body: body\n}).as('check-user');\ncy.get('@check-user').then(res => {\n  expect(res.body.username).to.equal(_loginInfo.username);\n  expect(res.body.hasAccount).to.be.true;\n  expect(res.body.hasPassword).to.be.true;\n  expect(res.body.mobile).to.be.true;\n});",
               "err": {
-                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[class=\"text-bold\"]`, but never found it.",
-                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[class=\"text-bold\"]`, but never found it.\n    at Context.eval (webpack:///./cypress/e2e/AutoTests/Customer/Create-tripRequest.cy.js:21:11)",
+                "message": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/check-user\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/check-user\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 28\n}\nBody: {\"username\":\"+989362348839\"}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:07:50 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/check-user\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/check-user\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 28\n}\nBody: {\"username\":\"+989362348839\"}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:07:50 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request\n    at <unknown> (http://localhost:38973/__cypress/runner/cypress_runner.js:133123:72)\n    at tryCatcher (http://localhost:38973/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:38973/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:38973/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:38973/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:38973/__cypress/runner/cypress_runner.js:1701:18)\n    at _drainQueueStep (http://localhost:38973/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:38973/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:38973/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:38973/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack:///./cypress/e2e/API/Test_api.cy.js:17:11)",
                 "diff": null
               },
-              "uuid": "802c1f3f-f740-42d0-89aa-0a5de3e4edfb",
-              "parentUUID": "9e895d11-d901-452a-bc5f-fb29b4ec8b1a",
+              "uuid": "d0f8bd92-d87a-42b4-bed4-89e2da5d05d3",
+              "parentUUID": "5c37e767-fab2-446a-8586-e8cf4f29b008",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "login user",
+              "fullTitle": "Account public login user",
+              "timedOut": null,
+              "duration": 180,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const body = {\n  \"panelType\": \"CUSTOMER\",\n  \"clientType\": \"WEB\",\n  \"uniqueId\": 979807369,\n  \"username\": _loginInfo.username,\n  \"password\": _loginInfo.password,\n  \"firebaseToken\": null\n};\nlet baseUrl = new _urls.BaseURL('/pub', '/account');\ncy.request({\n  method: 'POST',\n  url: `${baseUrl.adminBaseURL()}/login`,\n  body: body\n}).as('login-user');\ncy.get('@login-user').then(res => {\n  cy.get('@login-user').its('status').should('equal', 200);\n  expect(res.body.account.mobile).to.equal(_loginInfo.username);\n  expect(res.body.account.mobile).to.exist;\n  expect(res.body.account.id).to.exist;\n  expect(res.body.accessToken).to.exist;\n  expect(res.body.refreshToken).to.exist;\n});",
+              "err": {
+                "message": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/login\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/login\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 132\n}\nBody: {\"panelType\":\"CUSTOMER\",\"clientType\":\"WEB\",\"uniqueId\":979807369,\"username\":\"+989362348839\",\"password\":\"123456\",\"firebaseToken\":null}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:07:50 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/login\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/login\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 132\n}\nBody: {\"panelType\":\"CUSTOMER\",\"clientType\":\"WEB\",\"uniqueId\":979807369,\"username\":\"+989362348839\",\"password\":\"123456\",\"firebaseToken\":null}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:07:50 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request\n    at <unknown> (http://localhost:38973/__cypress/runner/cypress_runner.js:133123:72)\n    at tryCatcher (http://localhost:38973/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:38973/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:38973/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:38973/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:38973/__cypress/runner/cypress_runner.js:1701:18)\n    at _drainQueueStep (http://localhost:38973/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:38973/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:38973/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:38973/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack:///./cypress/e2e/API/Test_api.cy.js:40:11)",
+                "diff": null
+              },
+              "uuid": "29bde7de-4e0d-4c81-860f-55e426e1bef6",
+              "parentUUID": "5c37e767-fab2-446a-8586-e8cf4f29b008",
               "isHook": false,
               "skipped": false
             }
@@ -60,11 +82,239 @@
           "suites": [],
           "passes": [],
           "failures": [
-            "802c1f3f-f740-42d0-89aa-0a5de3e4edfb"
+            "d0f8bd92-d87a-42b4-bed4-89e2da5d05d3",
+            "29bde7de-4e0d-4c81-860f-55e426e1bef6"
           ],
           "pending": [],
           "skipped": [],
-          "duration": 8266,
+          "duration": 592,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "3ea822d6-8cd9-4464-b2f8-3f4e1f477d72",
+          "title": "Account idn",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "test logout",
+              "fullTitle": "Account idn test logout",
+              "timedOut": null,
+              "duration": 144,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/idn', '/account');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'POST',\n  url: `${baseUrl.adminBaseURL()}/logout`,\n  headers: {\n    Authorization\n  }\n});",
+              "err": {
+                "message": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Account idn`",
+                "estack": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Account idn`\n    at Context.eval (webpack:///./cypress/e2e/API/Test_api.cy.js:59:26)",
+                "diff": null
+              },
+              "uuid": "63fe38f5-f1c3-4d68-a4cf-472492c9f8d6",
+              "parentUUID": "3ea822d6-8cd9-4464-b2f8-3f4e1f477d72",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "test profile GET",
+              "fullTitle": "Account idn test profile GET",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/idn', '/account');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'GET',\n  url: `${baseUrl.adminBaseURL()}/profile`,\n  headers: {\n    Authorization\n  }\n}).as('profile');\ncy.get('@profile').then(res => {\n  cy.get('@profile').its('status').should('equal', 200);\n  expect(res.body.user).to.exist;\n  expect(res.body.user.mobile, res.body.user.firstName, res.body.user.lastName, res.body.user.nationalId, res.body.user.fullName).to.exist;\n  expect(res.body.user.mobile).to.equal(_loginInfo.username);\n  // expect(` ${res.body.user.firstName} ${res.body.user.lastName} `).to.equal(res.body.user.fullName)\n});",
+              "err": {},
+              "uuid": "078b6c47-e40c-4a5b-ad11-fca2ad079fd4",
+              "parentUUID": "3ea822d6-8cd9-4464-b2f8-3f4e1f477d72",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "heve password",
+              "fullTitle": "Account idn heve password",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/idn', '/account');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'GET',\n  url: `${baseUrl.adminBaseURL()}/profile/have-pass`,\n  headers: {\n    Authorization\n  }\n}).as('password');\ncy.get('@password').then(res => {\n  cy.get('@password').its('status').should('equal', 200);\n  expect(res.body.havePassword).to.equal(true);\n});",
+              "err": {},
+              "uuid": "8b323259-d74b-4e1a-a3db-f17b7ab43b19",
+              "parentUUID": "3ea822d6-8cd9-4464-b2f8-3f4e1f477d72",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "63fe38f5-f1c3-4d68-a4cf-472492c9f8d6"
+          ],
+          "pending": [],
+          "skipped": [
+            "078b6c47-e40c-4a5b-ad11-fca2ad079fd4",
+            "8b323259-d74b-4e1a-a3db-f17b7ab43b19"
+          ],
+          "duration": 144,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "5220e3c4-ff75-452c-a86e-35108169c8b9",
+          "title": "get difference between two lists of sellers from customerPanel and adminPanel",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "GET sellers from customer panel",
+              "fullTitle": "get difference between two lists of sellers from customerPanel and adminPanel GET sellers from customer panel",
+              "timedOut": null,
+              "duration": 162,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/customer', '/sellers');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'GET',\n  url: `${baseUrl.customerBaseURL()}`,\n  headers: {\n    Authorization\n  }\n}).as('sellers');\ncy.get('@sellers').then(res => {\n  let response = res.body;\n  for (let i = 0; i < response.length; i++) {\n    ListSellerCustomer.push(response[i].sellerName);\n  }\n});",
+              "err": {
+                "message": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `get difference between two ...`",
+                "estack": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `get difference between two ...`\n    at Context.eval (webpack:///./cypress/e2e/API/Test_api.cy.js:121:26)",
+                "diff": null
+              },
+              "uuid": "c6fad8b3-41bd-411c-a62a-650f113cbeb2",
+              "parentUUID": "5220e3c4-ff75-452c-a86e-35108169c8b9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "GET sellers from admin panel",
+              "fullTitle": "get difference between two lists of sellers from customerPanel and adminPanel GET sellers from admin panel",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/admin', '/customers');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'GET',\n  url: `${baseUrl.adminBaseURL()}/15241/seller-customers`,\n  qs: {\n    \"include\": \"seller\"\n  },\n  headers: {\n    Authorization\n  }\n}).as('sellers');\ncy.get('@sellers').then(res => {\n  let response = res.body.sellerCustomers;\n  for (let i = 0; i < response.length; i++) {\n    ListSellerAdmin.push(response[i].seller.name);\n  }\n});",
+              "err": {},
+              "uuid": "647f6d0d-5bba-4563-8d9a-c4ba956e31c1",
+              "parentUUID": "5220e3c4-ff75-452c-a86e-35108169c8b9",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "get difference between two lists of sellers from customerPanel and adminPanel",
+              "fullTitle": "get difference between two lists of sellers from customerPanel and adminPanel get difference between two lists of sellers from customerPanel and adminPanel",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let difference = ListSellerCustomer.filter(x => !ListSellerAdmin.includes(x)).concat(ListSellerAdmin.filter(x => !ListSellerCustomer.includes(x)));\nexpect(difference).to.deep.equal([]);",
+              "err": {},
+              "uuid": "16b3aa69-efb7-47e1-b4a4-d777d72e6803",
+              "parentUUID": "5220e3c4-ff75-452c-a86e-35108169c8b9",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "c6fad8b3-41bd-411c-a62a-650f113cbeb2"
+          ],
+          "pending": [],
+          "skipped": [
+            "647f6d0d-5bba-4563-8d9a-c4ba956e31c1",
+            "16b3aa69-efb7-47e1-b4a4-d777d72e6803"
+          ],
+          "duration": 162,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "cc52f3de-3f46-495f-b6a1-5a8e575bcec8",
+          "title": "trip request",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "GET trip request",
+              "fullTitle": "trip request GET trip request",
+              "timedOut": null,
+              "duration": 162,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/customer', '/trip-requests');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'GET',\n  url: `${baseUrl.customerBaseURL()}`,\n  headers: {\n    Authorization\n  }\n}).as('trip-requests');\ncy.get('@trip-requests').then(res => {\n  cy.log(res.body[0]);\n});",
+              "err": {
+                "message": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `trip request`",
+                "estack": "TypeError: (0 , _login.login) is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `trip request`\n    at Context.eval (webpack:///./cypress/e2e/API/Test_api.cy.js:175:26)",
+                "diff": null
+              },
+              "uuid": "d7f3d4a3-a105-455e-879c-b186e92577d1",
+              "parentUUID": "cc52f3de-3f46-495f-b6a1-5a8e575bcec8",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "POST trip request",
+              "fullTitle": "trip request POST trip request",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let baseUrl = new _urls.BaseURL('/customer', '/trip-requests');\nconst Authorization = `Bearer ${accessToken}`;\ncy.request({\n  method: 'POST',\n  url: `${baseUrl.customerBaseURL()}`,\n  headers: {\n    Authorization\n  },\n  body: createTripRequest\n}).as('trip-request');\ncy.get('@trip-request').then(res => {\n  cy.get(res).its('status').should('equal', 200);\n  expect(res.body.id).to.exist;\n});",
+              "err": {},
+              "uuid": "c0266b91-6f93-411b-a58f-aa9a08db52e6",
+              "parentUUID": "cc52f3de-3f46-495f-b6a1-5a8e575bcec8",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "d7f3d4a3-a105-455e-879c-b186e92577d1"
+          ],
+          "pending": [],
+          "skipped": [
+            "c0266b91-6f93-411b-a58f-aa9a08db52e6"
+          ],
+          "duration": 162,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -98,12 +348,10 @@
     },
     "marge": {
       "options": {
-        "id": "default",
-        "cypressParallel": "true",
         "overwrite": false,
         "html": false,
         "json": true,
-        "reportDir": "cypress\\reports\\html\\.jsons"
+        "reportDir": "cypress/reports/html/.jsons"
       },
       "version": "6.2.0"
     }

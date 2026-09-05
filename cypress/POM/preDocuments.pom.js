@@ -1,7 +1,7 @@
 export class FormControl{
     constructor(inputName){
         this.inputName = inputName
-        this.seller = ':nth-child(2) > [aria-colindex="6"] > :nth-child(1) > .text-center > .btn'
+        // this.seller = ':nth-child(2) > [aria-colindex="6"] > :nth-child(1) > .text-center > .btn'
     }
 
     selectOnInput(){
@@ -28,8 +28,12 @@ export class FormControl{
     }
 
     setSeller(){
-        cy.gclick(this.seller)
-        cy.wait(200)
+        cy.get('.modal-body').within(() => {
+            cy.get('div > .row > :nth-child(1) > .input-group').within(() => {
+                cy.gtype('input', 2)
+            })
+        })
+        cy.wait(500)
     }
 }
 

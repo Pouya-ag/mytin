@@ -1,9 +1,9 @@
-import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api } from '../../../../fixtures/urls.json'
-import { Login2 } from '../../../../POM/home.pom'
-import { ReferencePage, FormControl, AddProduct } from '../../../../POM/references.pom';
+import { URL, admin_api, admin } from '../../../../fixtures/urls.json';
+import { Login2 } from '../../../../POM/home.pom';
+import { FormControl, Pages, AddProduct } from '../../../../POM/gelobalMethod.pom';
 
 
-describe('Reference dock create', () => {
+describe('Create refernce Dock to Depot', () => {
     it('Reference dock create', () => {
         cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/to-dock`).as('creatReference')
         cy.visit(`${URL}${admin}`)
@@ -23,58 +23,48 @@ describe('Reference dock create', () => {
         cy.gcclick('div', ' رفرنس ')
         cy.wait(200)
 
-        let referencepage = new ReferencePage('/references', '/to-dock')
-        referencepage.goToPage()
+        let referencepage = new Pages('/references', '/to-dock')
+        referencepage.mainPage()
         referencepage.createPage()
 
         // add seller to form control
         let seller = new FormControl('[name="تامین کننده"]')
         seller.selectOnInput()
-        seller.btnSearchModal()
         seller.setSeller()
+        seller.btnSearchModal()
 
         // set date to form control
         seller.setDate()
 
-        // cy.get('[name="انبار بارانداز"]').within(() => {
-        //     cy.gclick('.ac-wrapper > .input-group > .ac-form-control > .ac-actions')
-        // })
-        // cy.wait(200)
-        // cy.gclick('#item-text-0')
-        // cy.wait(200)
+        cy.gclick('.ac-form-control')
+        cy.gclick('.ac-dropdown-items > :nth-child(2)')
+        
 
         cy.gclick(':nth-child(1) > :nth-child(1) > .form-control > .d-inline-block > .switch-slider')
      
         // add new product 
-        let addProduct = new FormControl('[name="کالا"]')
-        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20', ':nth-child(1)')
+        let formControl = new FormControl('[name="کالا"]')
 
-        addProduct.selectOnInput()
-        firstProduct.filterProduct()
-        addProduct.btnSearchModal()
+        cy.fixture("Products").then(data => {
+            
+            let barcodes = [data[163]["barcode"], data[112]["barcode"]]
 
-        // log product's name
-        cy.log(firstProduct.logProduct())
+            for(let i = 0; i < barcodes.length; i++){
 
-        firstProduct.add()
-        
-        // type number of product
-        firstProduct.typeNumberOfProduct()
+                let addProduct = new AddProduct(barcodes[i])
+                
+                formControl.selectOnInput()
 
-        // add new product
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20', ':nth-child(2)')
+                addProduct.setBarcode()
 
-        addProduct.selectOnInput()
-        secondProduct.filterProduct()
-        addProduct.btnSearchModal()
+                formControl.btnSearchModal()
 
-        // log product's name
-        cy.log(secondProduct.logProduct())
+                cy.gclick('#submitButton')
 
-        secondProduct.add()
-
-        // type number of product
-        secondProduct.typeNumberOfProduct()
+                addProduct.typeNumberOfProduct()
+            }
+        })
+        cy.wait(1500)
 
         cy.gclick('#footer-submit-button')
         

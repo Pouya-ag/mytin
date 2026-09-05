@@ -12,7 +12,7 @@ describe('pre document for decline dock to fulfillment', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/decline-dock-to-fulfillment`).as('get-dockId')
         
         let login = new Login2()
@@ -84,6 +84,8 @@ describe('pre document for decline dock to fulfillment', () => {
 
         // query to check products on database
         cy.get('@get-dockId').its('response.body.id').then((res) => {
+            cy.log(JSON.stringify(res))
+            cy.wait(9999999)
             cy.task("connectDB", `
                 SELECT name FROM Dispatch.product pro
                 JOIN Dispatch.product_article pa

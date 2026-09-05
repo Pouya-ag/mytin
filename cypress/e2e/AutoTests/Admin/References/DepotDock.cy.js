@@ -1,13 +1,12 @@
-import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
-import { Login2 } from '../../../../POM/home.pom'
-import { ReferencePage, FormControl, AddProduct } from '../../../../POM/references.pom';
-import { DateTime } from '../../../../POM/gelobalMethod.pom';
+import { URL, admin_api, admin, InvDocRef } from '../../../../fixtures/urls.json';
+import { Login2 } from '../../../../POM/home.pom';
+import { DateTime, FormControl, Pages, AddProduct } from '../../../../POM/gelobalMethod.pom';
 import { depot } from '../../../../fixtures/Items.json';
 
 
-describe('Reference dock create', () => {
+describe('Create refernce Depot to Dock', () => {
     it('Reference dock create', () => {
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/depot-to-dock`).as('creatReference')
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
@@ -21,7 +20,7 @@ describe('Reference dock create', () => {
         cy.get('.sidebar').should('be.visible')
 
         cy.fixture("CreateDock").then((data) => {
-            let date = new DateTime(1)
+            let date = new DateTime(0)
             let time = date.liveDate()
 
             let body = data;
@@ -34,7 +33,7 @@ describe('Reference dock create', () => {
             time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })
@@ -52,15 +51,15 @@ describe('Reference dock create', () => {
         cy.wait(200)
 
         // go to create new document page
-        let referencepage = new ReferencePage('/references', '/depot-to-dock')
-        referencepage.goToPage()
+        let referencepage = new Pages('/references', '/depot-to-dock')
+        referencepage.mainPage()
         referencepage.createPage()
 
         // add seller to form control
         let seller = new FormControl('[name="تامین کننده"]')
         seller.selectOnInput()
-        seller.btnSearchModal()
         seller.setSeller()
+        seller.btnSearchModal()
 
         // set date to form control
         seller.setDate()
@@ -69,38 +68,31 @@ describe('Reference dock create', () => {
         let depotForm = new FormControl('[name="انبار دپو"]')
         depotForm.selectOnInput()
         depotForm.btnSearchModal()
-        // cy.gclick(':nth-child(2) > [aria-colindex="5"] > :nth-child(1) > .text-center > .btn')
 
         // add new product 
-        let addProduct = new FormControl('[name="کالا"]')
-        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20', ':nth-child(1)')
-
-        addProduct.selectOnInput()
-        firstProduct.filterProduct()
-        addProduct.btnSearchModal()
-
-        // log product's name
-        cy.log(firstProduct.logProduct())
-
-        firstProduct.add()
+        let formControl = new FormControl('[name="کالا"]')
         
-        // type number of product
-        firstProduct.typeNumberOfProduct()
+        
+        cy.fixture("Products").then(data => {
+            
+            let barcodes = [data[163]["barcode"], data[112]["barcode"]]
 
-        // add new product
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20', ':nth-child(2)')
+            for(let i = 0; i < barcodes.length; i++){
 
-        addProduct.selectOnInput()
-        secondProduct.filterProduct()
-        addProduct.btnSearchModal()
+                let addProduct = new AddProduct(barcodes[i])
+                
+                formControl.selectOnInput()
 
-        // log product's name
-        cy.log(secondProduct.logProduct())
+                addProduct.setBarcode()
 
-        secondProduct.add()
+                formControl.btnSearchModal()
 
-        // type number of product
-        secondProduct.typeNumberOfProduct()
+                cy.gclick('#submitButton')
+
+                addProduct.typeNumberOfProduct()
+            }
+        })
+        cy.wait(1500)
 
         // save and get all data from request and response
 

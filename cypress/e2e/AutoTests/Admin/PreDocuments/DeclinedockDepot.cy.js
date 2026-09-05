@@ -12,7 +12,7 @@ describe('pre document for decline dock to depot', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/decline-dock-to-depot`).as('get-dockId')
         
         let login = new Login2()

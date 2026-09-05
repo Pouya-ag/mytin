@@ -1,13 +1,12 @@
-import { URL, admin_api, admin, URL_stage146, admin_stage, admin_stage_api, InvDocRef } from '../../../../fixtures/urls.json'
-import { Login2 } from '../../../../POM/home.pom'
-import { FormControl, ReferencePage, AddProduct } from '../../../../POM/references.pom';
-import { DateTime } from '../../../../POM/gelobalMethod.pom';
+import { URL, admin_api, admin, InvDocRef } from '../../../../fixtures/urls.json';
+import { Login2 } from '../../../../POM/home.pom';
+import { DateTime, FormControl, Pages, AddProduct } from '../../../../POM/gelobalMethod.pom';
 import { depot } from '../../../../fixtures/Items.json';
 
 
-describe('Reference dock create', () => {
+describe('Create refernce Depot to Fulfillment', () => {
     it('Reference dock create', () => {
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document-references/depot-to-fulfillment`).as('creatReference')
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
@@ -22,7 +21,7 @@ describe('Reference dock create', () => {
 
 
         cy.fixture("CreateDock").then((data) => {
-            let date = new DateTime(1)
+            let date = new DateTime(0)
             let time = date.liveDate()
 
             let body = data;
@@ -36,7 +35,7 @@ describe('Reference dock create', () => {
 
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })
@@ -52,15 +51,15 @@ describe('Reference dock create', () => {
         cy.gcclick('div', ' رفرنس ')
         cy.wait(200)
 
-        let referencepage = new ReferencePage('/references', '/depot-to-fulfillment')
-        referencepage.goToPage()
+        let referencepage = new Pages('/references', '/depot-to-fulfillment')
+        referencepage.mainPage()
         referencepage.createPage()
 
         // add seller to form control
         let seller = new FormControl('[name="تامین کننده"]')
         seller.selectOnInput()
-        seller.btnSearchModal()
         seller.setSeller()
+        seller.btnSearchModal()
 
         // set date to form control
         seller.setDate()
@@ -69,7 +68,6 @@ describe('Reference dock create', () => {
         let dock = new FormControl('[name="انبار دپو"]')
         dock.selectOnInput()
         dock.btnSearchModal()
-        // cy.gclick(':nth-child(2) > [aria-colindex="5"] > :nth-child(1) > .text-center > .btn')
 
         // add date for reference to customer
         let addcustomerdate = new FormControl('[name="شیوه و زمان مراجعه به مشتری"]')
@@ -80,18 +78,37 @@ describe('Reference dock create', () => {
         })
         cy.gclick('.card-footer > .btn-success')
         cy.gclick('.card-footer > .btn-secondary')
-        cy.wait(2000)
+        cy.wait(1000)
 
         cy.get('[name="تاریخ مراجعه "]').within(() => {
             cy.get(':nth-child(5)').click()
         })
-        cy.gclick('.card-footer > .btn-success')
-        cy.gclick('.card-footer > .btn-secondary')
-        cy.wait(200)
+
+        cy.get('[class="dialog-days d-flex flex-wrap w-100 mb-2"]').within(() => {
+            cy.get('.day-box').last().within(() => {
+                cy.get('.num').invoke('text').as('lastDay')
+
+            })
+        })
+
+        cy.get('.chosen-day').within(() => {
+            cy.get('.num').invoke('text').as('chosendDay')
+        })
+
+        cy.get('@lastDay').then((lastDay) => {
+            cy.get('@chosendDay').then((chosenDay) =>{
+                if (lastDay == chosenDay) {
+                    cy.get('.nextMonth').click() 
+                    cy.get('[class="dialog-days d-flex flex-wrap w-100 mb-2"]').find('[class="day-box"]').first().click()
+                }
+                else {cy.get('.chosen-day').next().click()}
+            })
+        })
+        cy.wait(1000)
 
         cy.gclick('.btn-primary')
+        cy.wait(1000)
 
-        // cy.gclick(':nth-child(2) > .me-auto')
         cy.get('.table').within(() => {
             cy.get('tbody > :nth-child(1) > :nth-child(3)').within(() => {
                 cy.get('.text-center').within(() => {
@@ -101,35 +118,28 @@ describe('Reference dock create', () => {
         })
 
         // add new product 
-        let addProduct = new FormControl('[name="کالا"]')
-        let firstProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(1)', '20', ':nth-child(1)')
+        let formControl = new FormControl('[name="کالا"]')
 
-        addProduct.selectOnInput()
-        firstProduct.filterProduct()
-        addProduct.btnSearchModal()
+        cy.fixture("Products").then(data => {
+            
+            let barcodes = [data[163]["barcode"], data[112]["barcode"]]
 
-        // log product's name
-        cy.log(firstProduct.logProduct())
+            for(let i = 0; i < barcodes.length; i++){
 
-        firstProduct.add()
-        
-        // type number of product
-        firstProduct.typeNumberOfProduct()
+                let addProduct = new AddProduct(barcodes[i])
+                
+                formControl.selectOnInput()
 
-        // add new product
-        let secondProduct = new AddProduct('[name="طبقه بندی کالای تامین کننده"]', ':nth-child(4)', '20', ':nth-child(2)')
+                addProduct.setBarcode()
 
-        addProduct.selectOnInput()
-        secondProduct.filterProduct()
-        addProduct.btnSearchModal()
+                formControl.btnSearchModal()
 
-        // log product's name
-        cy.log(secondProduct.logProduct())
+                cy.gclick('#submitButton')
 
-        secondProduct.add()
-
-        // type number of product
-        secondProduct.typeNumberOfProduct()
+                addProduct.typeNumberOfProduct()
+            }
+        })
+        cy.wait(1500)
 
         cy.gclick('#footer-submit-button')
         

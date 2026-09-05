@@ -12,7 +12,7 @@ describe('pre-document dock to depot', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/dock-to-depot`).as('get-dockId')
         
         let login = new Login2()
@@ -37,7 +37,7 @@ describe('pre-document dock to depot', () => {
             time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })
@@ -128,7 +128,7 @@ describe('pre-document dock to depot', () => {
         cy.gclick('.btn-primary')
 
         cy.gcclick('button', ' درج کالاهای رفرنس ')
-        cy.wait(1000)
+        cy.wait(3000)
 
         let products = cy.get('.table-bordered > tbody > tr')
         cy.get('@create-reference').then((res) => { 

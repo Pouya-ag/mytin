@@ -4,6 +4,7 @@ import { DateTime, ConfirmPreDock } from '../../../../POM/gelobalMethod.pom';
 import { ReferencePage } from '../../../../POM/references.pom';
 import { depot, dock, fulfillment } from '../../../../fixtures/Items.json';
 import { SetDateTime, FormControl, AddProduct } from '../../../../POM/preDocuments.pom';
+import { Triprequest, BinToDockDocument, DocumentProducts } from '../../../../POM/database.pom';
 
 
 
@@ -12,7 +13,7 @@ describe('pre-document fulfillment to dispatch', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/bin-to-dock`).as('get-dockId')
         
         let login = new Login2()
@@ -22,6 +23,7 @@ describe('pre-document fulfillment to dispatch', () => {
         cy.wait(3000)
 
         cy.get('.sidebar').should('be.visible')
+
 
         // reference Dock and Dock to Fulfillment *REST*
         cy.fixture("CreateDock").then((data) => {
@@ -38,9 +40,18 @@ describe('pre-document fulfillment to dispatch', () => {
             time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 1;`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
+            })
+            cy.task("connectDB", `
+                SELECT id_pk, code, product_unit_id_fk 
+                FROM Dispatch.product_article
+                WHERE product_id_fk = ${product.id}
+                AND seller_id_fk = 1;`)
+            .then((response) => {
+                item.productArticleId = response[0].id_pk
+                item.code = response[0].code
             })
 
             cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
@@ -93,6 +104,7 @@ describe('pre-document fulfillment to dispatch', () => {
             })
         })
 
+
         // trip-request *REST* 
         let date = new DateTime(1)
         let time = date.liveDate()
@@ -100,34 +112,92 @@ describe('pre-document fulfillment to dispatch', () => {
         let sellerCustomerID = 40414;
         // let customerID = 32738;
         // let sellerCustomerID = 60272;
-        cy.task("connectDB", `
-        SELECT tr.id_pk FROM Dispatch.trip_request tr
-        JOIN Dispatch.seller_delivery_shift sds
-        ON tr.seller_delivery_shift_id_fk = sds.id_pk
-        WHERE tr.customer_id_fk = ${customerID}
-        AND sds.delivery_date = '${time} 20:30:00'
-        AND tr.canceled IS NULL;`)
-                .then((response) => {
-                        if (response.length != 0) {
-                            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                                cy.request({method: 'PUT', url:`${URL}${admin_api}/trip-requests/cancel/${response[0].id_pk}`, headers:{Authorization:`Bearer ${res}`}})
-                            })   
-                        }})
-        cy.fixture("TripRequest").then(data => {
-           
-            cy.task("connectDB", `
-                SELECT sds.id_pk FROM Dispatch.seller_delivery_shift sds
-                WHERE sds.delivery_date = '${time} 20:30:00';
-            `).then( res => {
-                data.sellerDeliveryShiftId = res[0].id_pk
-                data.sellerCustomerId = sellerCustomerID
+
+        let tripRequest = new Triprequest(time, customerID)
+        let newObject = {};
+
+        tripRequest.getVatCategory().then( result => {
+
+            newObject.TaxPercent = result[0]
+            newObject.TollPercent = result[1]
+            newObject.Name = result[2]
+            cy.task('setData', newObject)
+
+        })
+
+        cy.task('getData').then(myData => {
+
+            tripRequest.getPrice().then(result => { 
+                    
+                myData.UnitMinPayable = result[0]
+                myData.UnitPriceBeforeDiscount = result[1]
+                cy.task('setData', myData)
+    
             })
 
-            cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
-                cy.request({method: 'POST', url:`${URL}${admin_api}/trip-requests`, headers: {Authorization:`Bearer ${res}`}, body: data}).as('create-triprequest')
+        })
+
+        cy.task('getData').then(myData => {
+
+            tripRequest.getSellerDeliveryShift().then(result => {
+
+                myData.sellerDeliveryShiftId = result
+                cy.task('setData', myData)
+
             })
+
+        })
+
+        cy.task('getData').then(myData => {
+
+            myData.UnitTax = myData.UnitPriceBeforeDiscount * (myData.TaxPercent / 100)
+            myData.UnitToll = myData.UnitPriceBeforeDiscount * (myData.TollPercent / 100)
+            myData.Tax = myData.UnitTax * 20
+            myData.Toll = myData.UnitToll * 20
+            myData.UnitPayable = myData.UnitPriceBeforeDiscount + myData.UnitTax + myData.UnitToll
+            cy.task('setData', myData)
+
+        })
+
+
+        // tripRequest.cancelExistTripRequest().then(result => {
+
+        //     if (result.length != 0) {
+        //         cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+        //             cy.request({method: 'PUT', url:`${URL}${admin_api}/trip-requests/cancel/${result[0].id_pk}`, headers:{Authorization:`Bearer ${res}`}})
+        //         })   
+        //     }
+
+        // })
+
+        cy.task('getData').then(myJson => {
+
+            cy.fixture("TripRequest").then(data => {
+               
+                data.sellerDeliveryShiftId = myJson.sellerDeliveryShiftId;
+                const items = data.parcelRequest.items;
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    item.vatCategory.taxPercent = myJson.TaxPercent
+                    item.vatCategory.tollPercent = myJson.TollPercent;
+                    item.vatCategory.name = myJson.Name;
+                    item.deliveryRequestItemMetaIn.unitMinPayable = Math.ceil(myJson.UnitMinPayable);
+                    item.deliveryRequestItemMetaIn.unitPriceBeforeDiscount = Math.ceil(myJson.UnitPriceBeforeDiscount);
+                    item.deliveryRequestItemMetaIn.unitTax = Math.ceil(myJson.UnitTax);
+                    item.deliveryRequestItemMetaIn.unitToll = Math.ceil(myJson.UnitToll);
+                    item.tax = Math.ceil(myJson.Tax);
+                    item.toll = Math.ceil(myJson.Toll);
+                    item.deliveryRequestItemMetaIn.unitPayable = Math.ceil(myJson.UnitPayable);
+                }
+    
+                cy.get('@get-accessToken').its('response.body.accessToken').then(res => {
+                    cy.request({method: 'POST', url:`${URL}${admin_api}/trip-requests`, headers: {Authorization:`Bearer ${res}`}, body: data}).as('create-triprequest')
+                })
+            })
+
         })
         cy.wait(1500)
+
 
         // tour *REST*
         cy.fixture("CreateTour").then(data => {
@@ -135,20 +205,16 @@ describe('pre-document fulfillment to dispatch', () => {
 
                 data.driverId = 100000007
                 data.courierId = 100000007
-                cy.task("connectDB", `
-                    select id_pk from Dispatch.vehicle vehicle
-                    where vehicle.active = true
-                    and vehicle.vehicle_type_id_fk = 2
-                    limit 5;
-                `).then(vehicle => {
+                
+                tripRequest.getVehicle().then(vehicle => {
                     data.vehicleId = vehicle[4].id_pk
-                })
-
-                cy.get('@create-triprequest').then(triprequest => {
+                
+                    cy.get('@create-triprequest').then(triprequest => {
                     
-                    data.tripsIn[0].tripId = triprequest.body.tripId
+                        data.tripsIn[0].tripId = triprequest.body.tripId
 
-                    cy.request({method: 'POST', url: `${URL}${admin_api}/tours`, headers: {Authorization: `Bearer ${token}`}, body: data}).as('tour')
+                        cy.request({method: 'POST', url: `${URL}${admin_api}/tours`, headers: {Authorization: `Bearer ${token}`}, body: data}).as('tour')
+                    })
                 })
             })
         })
@@ -156,16 +222,16 @@ describe('pre-document fulfillment to dispatch', () => {
 
 
         // get token app 
-        let yoyo = {"clientType":"ANDROID","firebaseToken":"","panelType":"DRIVER","password":"123456","uniqueId":"3a743fc1f2ac1405","username":"09362348839"}
+        let driverUser = {"clientType":"ANDROID","firebaseToken":"","panelType":"DRIVER","password":"123456","uniqueId":"3a743fc1f2ac1405","username":"09362348839"}
 
-        cy.request({method: 'POST', url: `${URL}:7000/api/pub/account/login`, body: yoyo}).as('tokenDriver')
+        cy.request({method: 'POST', url: `${URL}:7071/api/pub/account/login`, body: driverUser}).as('tokenDriver')
 
         cy.wait(1000)
 
         // start tour on app
         cy.get('@tour').its('body.id').then(tourId => {
             cy.get('@tokenDriver').its('body').then(res => {
-                    cy.request({method: 'PUT', url: `http://192.168.7.10:7000/api/driver/tours/status/${tourId}/start`, headers:{Authorization: `Bearer ${res.accessToken}`}})
+                    cy.request({method: 'PUT', url: `http://192.168.7.10:7071/api/driver/tours/status/${tourId}/start`, headers:{Authorization: `Bearer ${res.accessToken}`}})
                 })
         })
 
@@ -182,7 +248,7 @@ describe('pre-document fulfillment to dispatch', () => {
             }
 
             cy.get('@tokenDriver').its('body').then(res => {  
-                cy.request({method: 'PUT', url:`http://192.168.7.10:7000/api/driver/delivery-requests/${triprequest.body.parcelRequest.id}`, headers:{Authorization: `Bearer ${res.accessToken}`}, body: dp})
+                cy.request({method: 'PUT', url:`http://192.168.7.10:7071/api/driver/delivery-requests/${triprequest.body.parcelRequest.id}`, headers:{Authorization: `Bearer ${res.accessToken}`}, body: dp})
             })
         })
         cy.wait(1000)
@@ -190,7 +256,7 @@ describe('pre-document fulfillment to dispatch', () => {
         // here i have to call a rest to get new amount
         cy.get('@tokenDriver').its('body').then(res => {
             cy.get('@create-triprequest').then(triprequest => {
-                cy.request({method: 'GET', url: `http://192.168.7.10:7000/api/driver/trip-requests/${triprequest.body.id}`, headers:{Authorization: `Bearer ${res.accessToken}`}}).as('newValue')
+                cy.request({method: 'GET', url: `http://192.168.7.10:7071/api/driver/trip-requests/${triprequest.body.id}`, headers:{Authorization: `Bearer ${res.accessToken}`}}).as('newValue')
             })
         })
         cy.wait(1500)
@@ -208,7 +274,7 @@ describe('pre-document fulfillment to dispatch', () => {
             cy.wait(500)
 
             cy.get('@tokenDriver').its('body').then(res => {  
-                cy.request({method: 'POST', url:`http://192.168.7.10:7000/api/driver/financial/payments`, headers:{Authorization: `Bearer ${res.accessToken}`}, body: ptr})
+                cy.request({method: 'POST', url:`http://192.168.7.10:7071/api/driver/financial/payments`, headers:{Authorization: `Bearer ${res.accessToken}`}, body: ptr})
             })
         })
         cy.wait(1000)
@@ -216,7 +282,7 @@ describe('pre-document fulfillment to dispatch', () => {
         // finish tour
         cy.get('@tour').its('body.id').then(tourId => {
             cy.get('@tokenDriver').its('body').then(res => {  
-                cy.request({method: 'PUT', url:`http://192.168.7.10:7000/api/driver/tours/status/${tourId}/finish`, headers:{Authorization: `Bearer ${res.accessToken}`}})
+                cy.request({method: 'PUT', url:`http://192.168.7.10:7071/api/driver/tours/status/${tourId}/finish`, headers:{Authorization: `Bearer ${res.accessToken}`}})
             })
         })
         cy.wait(1000)
@@ -322,6 +388,10 @@ describe('pre-document fulfillment to dispatch', () => {
         cy.get('[name="انبارک مبدا"]').select('انبارک')
         cy.wait(1000)
 
+        cy.get('[name="انبار مقصد"]').find('.ac-form-control').click()
+        cy.gcclick('.badge-secondary',' 164 ')
+        cy.wait(500)
+
         // here i have to add products with add rest of products button or manually
         cy.gcclick('button', ' درج کالاهای بازگشتی تور ')
         cy.wait(5000)
@@ -336,27 +406,17 @@ describe('pre-document fulfillment to dispatch', () => {
         // query to check products on database
         cy.get('@tour').its('body.id').then(tourId => {
 
-            cy.task("connectDB", `
-                SELECT id_pk FROM Dispatch.inventory_document indo
-                WHERE indo.tour_id_fk = ${tourId}
-                AND indo.deleted IS NULL
-                AND indo.document_type = 'BIN_TO_DOCK';`)
-            .then(res => {
-            
-                cy.wait(500)
+            let binToDock = new BinToDockDocument(tourId)
+
+            binToDock.getIdInventoryDocumentBinDock().then(res => {
 
                 cy.visit(`${URL}${admin}/documents/bin-to-dock/show/${res[0].id_pk}`)
                 cy.wait(3000)
 
 
-                cy.task("connectDB", `
-                    SELECT name FROM Dispatch.product pro
-                    JOIN Dispatch.product_article pa
-                    ON pa.product_id_fk = pro.id_pk
-                    JOIN Dispatch.inventory_document_item idi
-                    ON idi.product_article_id_fk = pa.id_pk
-                    WHERE idi.inventory_document_id_fk = ${res[0].id_pk};`)
-                .then((response) => {
+                let documentProducts = new DocumentProducts(res[0].id_pk)
+             
+                documentProducts.getProductFromDocument().then((response) => {
                     expect(product.length).to.eq(response.length)
 
                     // sort array of object order by name

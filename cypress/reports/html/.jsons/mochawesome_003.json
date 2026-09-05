@@ -1,0 +1,148 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-09-05T09:07:25.494Z",
+    "end": "2026-09-05T09:07:37.507Z",
+    "duration": 12013,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b78ca6a8-1829-421d-86cb-f2dd9041ec2d",
+      "title": "",
+      "fullFile": "cypress/e2e/AutoTests/Admin/Login/Login.cy.js",
+      "file": "cypress/e2e/AutoTests/Admin/Login/Login.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "37a8fddd-7f43-47e9-b5a3-8215e6fc3c60",
+          "title": "Login Admin panel",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Login Admin panel",
+              "fullTitle": "Login Admin panel Login Admin panel",
+              "timedOut": null,
+              "duration": 8791,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(`${_urls.URL}${_urls.admin}`);\ncy.wait(2000);\nlet login = new _home.Login2();\nlogin.usernameInput();\nlogin.passwordInput();\nlogin.LoginBtn();\ncy.wait(3000);\ncy.get('.sidebar').should('be.visible');",
+              "err": {},
+              "uuid": "4f1c36d5-f60b-4094-a87e-e20fd16ed7c3",
+              "parentUUID": "37a8fddd-7f43-47e9-b5a3-8215e6fc3c60",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "4f1c36d5-f60b-4094-a87e-e20fd16ed7c3"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 8791,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "fe9455d5-889e-40c5-bd07-a0be6677894e",
+          "title": "Logout Admin panel",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Logout admin panel",
+              "fullTitle": "Logout Admin panel Logout admin panel",
+              "timedOut": null,
+              "duration": 1352,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(`${_urls.URL}${_urls.admin}`);\nlet Login = (0, _login.loginAdmin)();\ncy.request({\n  method: 'POST',\n  url: `${Login.baseUrl.adminBaseURL()}/login`,\n  body: Login.body\n}).as('login-user');\ncy.get('@login-user').then(res => {\n  let account = JSON.stringify(res.body);\n  window.localStorage.setItem('Dispatch-acc', `{\"v\":${account}}`);\n});\ncy.reload();\ncy.wait(20000);\n// cy.gclick('[href=\"/dashboard\"]')\n// cy.wait(500)\n// cy.gclick('div.q-item')\n// cy.wait(500)\n// cy.get('.full-height').should('be.visible')",
+              "err": {
+                "message": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/login\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/login\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 109\n}\nBody: {\"username\":\"+989362348839\",\"password\":\"123456\",\"uniqueId\":3218944151,\"clientType\":\"WEB\",\"panelType\":\"ADMIN\"}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:08:23 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed on:\n\nhttp://192.168.7.10:7071/api/admin/pub/account/login\n\nThe response we received from your web server was:\n\n  > 406: Not Acceptable\n\nThis was considered a failure because the status code was not `2xx` or `3xx`.\n\nIf you do not want status codes to cause failures pass the option: `failOnStatusCode: false`\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: http://192.168.7.10:7071/api/admin/pub/account/login\nHeaders: {\n  \"Connection\": \"keep-alive\",\n  \"user-agent\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.7.3 Chrome/118.0.5993.159 Electron/27.1.3 Safari/537.36\",\n  \"accept\": \"*/*\",\n  \"accept-encoding\": \"gzip, deflate\",\n  \"content-type\": \"application/json\",\n  \"content-length\": 109\n}\nBody: {\"username\":\"+989362348839\",\"password\":\"123456\",\"uniqueId\":3218944151,\"clientType\":\"WEB\",\"panelType\":\"ADMIN\"}\n\n-----------------------------------------------------------\n\nThe response we got was:\n\nStatus: 406 - Not Acceptable\nHeaders: {\n  \"server\": \"nginx/1.18.0 (Ubuntu)\",\n  \"date\": \"Sat, 05 Sep 2026 09:08:23 GMT\",\n  \"content-type\": \"application/json\",\n  \"content-length\": \"73\",\n  \"connection\": \"keep-alive\",\n  \"vary\": \"Origin, Access-Control-Request-Method, Access-Control-Request-Headers\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-xss-protection\": \"0\",\n  \"cache-control\": \"no-cache, no-store, max-age=0, must-revalidate\",\n  \"pragma\": \"no-cache\",\n  \"expires\": \"0\",\n  \"x-frame-options\": \"DENY\",\n  \"strict-transport-security\": \"max-age=7889400; preload;\"\n}\nBody: {\n  \"code\": \"INVALID_TOKEN_HEADER\",\n  \"status\": 406,\n  \"errorCode\": 2101,\n  \"data\": null\n}\n\n\nhttps://on.cypress.io/request\n    at <unknown> (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:133123:72)\n    at tryCatcher (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:1701:18)\n    at _drainQueueStep (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://192.168.7.10:7001/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack:///./cypress/e2e/AutoTests/Admin/Login/Login.cy.js:26:11)",
+                "diff": null
+              },
+              "uuid": "2e1acc3a-4372-4b1a-abde-038d00923868",
+              "parentUUID": "fe9455d5-889e-40c5-bd07-a0be6677894e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "2e1acc3a-4372-4b1a-abde-038d00923868"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 1352,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress/reports/html/.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

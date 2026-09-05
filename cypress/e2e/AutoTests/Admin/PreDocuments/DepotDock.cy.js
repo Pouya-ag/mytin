@@ -12,7 +12,7 @@ describe('pre-document dock to fulfillment', () => {
         cy.visit(`${URL}${admin}`)
         cy.wait(2000)
         
-        cy.intercept('POST', `${URL}:7000/api/pub/account/login`).as('get-accessToken')
+        cy.intercept('POST', `${URL}:7071/api/pub/account/login`).as('get-accessToken')
         cy.intercept('POST', `${URL}${admin_api}/inventory-document/depot-to-dock`).as('get-dockId')
         
         let login = new Login2()
@@ -45,7 +45,7 @@ describe('pre-document dock to fulfillment', () => {
             time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })
@@ -115,7 +115,7 @@ describe('pre-document dock to fulfillment', () => {
             time = date.liveDate()
             cy.task("connectDB", `
             SELECT id_pk FROM Dispatch.seller_delivery_shift sds
-            WHERE sds.end_date_time = '${time} 10:30:00'`)
+            WHERE sds.end_date_time = '${time} 9:30:00' AND sds.seller_id_fk = 2`)
             .then((response) => {
                     body["sellerDeliveryShiftId"] = response[0].id_pk
             })
